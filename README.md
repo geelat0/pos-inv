@@ -10,6 +10,7 @@ npm install && npm run dev
 php artisan key:generate
 
 //run to local server
+
 php artisan serve
 
 
