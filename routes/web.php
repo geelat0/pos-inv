@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Auth;
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +14,41 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [Auth\AuthController::class, 'index']);
+Route::get('/login', [Auth\AuthController::class, 'index'])->name('login');
+Route::post('/login', [Auth\AuthController::class, 'login']);
+Route::get('/home', [Auth\AuthController::class, 'home']);
+Route::get('/logout', [Auth\AuthController::class, 'logout']);
+
+
+
+///  admin
+Route::group([
+    'middleware' => ['auth', 'admin'],
+    'prefix' => 'admin',
+    'as' => 'admin.',
+], function () {
+
+    Route::get('/', [AdminController::class, 'index']); // sample
+
 });
+
+//  manager
+Route::group([
+    'middleware' => ['auth', ',manager'],
+    'prefix' => 'manager',
+    'as' => 'manager.',
+], function () {
+
+});
+//  employee
+Route::group([
+    'middleware' => ['auth', ',employee'],
+    'prefix' => 'employee',
+    'as' => 'employee.',
+], function () {
+
+});
+
+
+
