@@ -10,4 +10,16 @@ class SupplierModel extends Model
     use HasFactory;
 
     protected $table ='supplier';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'supplier_name',
+        'updated_at',
+        'status',
+        'created_at',
+    ];
 }

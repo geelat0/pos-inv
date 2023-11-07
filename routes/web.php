@@ -31,6 +31,15 @@ Route::group([
 
     Route::get('/', [AdminController::class, 'index']); // sample
 
+    Route::get('/item-category', [AdminController::class, 'item_category']);
+    Route::post('/store-category', [AdminController::class, 'storeCategory']);
+    Route::post('/category-status', [AdminController::class, 'CategoryStatus']);
+    Route::post('/update_category', [AdminController::class, 'updateCategory']);
+
+    Route::get('/supplier', [AdminController::class, 'supplier']);
+    Route::post('/store-supplier', [AdminController::class, 'storeSupplier']);
+    Route::post('/supplier-status', [AdminController::class, 'SupplierStatus']);
+    Route::post('/update_supplier', [AdminController::class, 'updateSupplier']);
 });
 
 //  manager
