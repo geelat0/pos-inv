@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\LoginModel;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Models\User;
@@ -38,6 +39,16 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials)) {
+
+
+            $loginS = new LoginModel();
+            $loginS->date_time_in = now();
+            $loginS->status = 'Logged In';
+            // Associate the post with the authenticated user
+            $loginS->user_id =  Auth::id();
+            $loginS->save();
+
+
             return redirect()->intended($this->redirectTo);
         }
 

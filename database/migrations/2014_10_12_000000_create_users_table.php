@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('user_role');
             $table->string('gender');
             $table->string('mobile');
+            $table->string('status')->default('Active');
+
 
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

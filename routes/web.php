@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserManagementController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,6 +41,20 @@ Route::group([
     Route::post('/store-supplier', [AdminController::class, 'storeSupplier']);
     Route::post('/supplier-status', [AdminController::class, 'SupplierStatus']);
     Route::post('/update_supplier', [AdminController::class, 'updateSupplier']);
+
+
+    // user management
+    Route::get('/user-management', [UserManagementController::class, 'index']);
+    Route::post('/store-user', [UserManagementController::class, 'store']);
+    Route::post('/update-user/{user}', [UserManagementController::class, 'update']);
+    Route::post('/update-user-password/{user}', [UserManagementController::class, 'changePassword']);
+    Route::get('/view-user/{user}', [UserManagementController::class, 'show'])->name('viewUser');
+
+
+
+
+
+
 });
 
 //  manager
