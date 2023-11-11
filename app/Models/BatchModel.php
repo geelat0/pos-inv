@@ -9,4 +9,17 @@ class BatchModel extends Model
 {
     use HasFactory;
     protected $table ='batch';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'user_id',
+        'updated_at',
+        'created_at',
+    ];
+
+    
 }

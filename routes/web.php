@@ -40,6 +40,13 @@ Route::group([
     Route::post('/store-supplier', [AdminController::class, 'storeSupplier']);
     Route::post('/supplier-status', [AdminController::class, 'SupplierStatus']);
     Route::post('/update_supplier', [AdminController::class, 'updateSupplier']);
+
+    Route::get('/stocks', [AdminController::class, 'stocks']);
+    Route::post('/add-stocks', [AdminController::class, 'storeStocks']);
+    Route::post('/restocks', [AdminController::class, 'storeRestock']);
+    Route::post('/stock-status', [AdminController::class, 'StockStatus']);
+    Route::post('/item-status', [AdminController::class, 'ItemStatus']);
+    Route::post('/update_item', [AdminController::class, 'updateItem']);
 });
 
 //  manager

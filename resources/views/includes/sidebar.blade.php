@@ -5,7 +5,7 @@
                 <div class="list-group list-group-flush">
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin')}}"><i class="bi bi-bar-chart-line-fill">&nbsp;</i>Dashboard</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!"><i class="bi bi-calendar-event-fill">&nbsp;</i>Monthly Sales</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!"><i class="bi bi-box">&nbsp;</i>Stocks</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin/stocks')}}"><i class="bi bi-box">&nbsp;</i>Stocks</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin/supplier')}}"><i class="bi bi-truck">&nbsp;</i>Supplier</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin/item-category')}}"><i class="bi bi-list-ol">&nbsp;</i>Item Category</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="user-management.php"><i class="bi bi-people-fill">&nbsp;</i>System Users</a>
