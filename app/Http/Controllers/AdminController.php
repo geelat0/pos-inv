@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\CategoryModel;
 use App\Models\SupplierModel;
 use App\Models\BatchOrderModel;
+use App\Models\ReturnGroundsModel;
+use App\Models\ReturnItemModel;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -191,7 +194,7 @@ class AdminController extends Controller
     /**
      * Show stocks data
      */
-    public  function  stocks()
+    public  function  stocks(Request $request)
     {
         $categories = CategoryModel::where('status', 'Active')->get();
         $suppliers = SupplierModel::where('status', 'Active')->get();
@@ -199,17 +202,15 @@ class AdminController extends Controller
         $items = ItemModel::with('category', 'supplier')->get();
 
         $lastBatch = BatchModel::latest('id')->first();
+        $lastId = $lastBatch ? $lastBatch->id + 1 : 1;
 
-        // Check if a record was found
-        if ($lastBatch) {
-            $lastbatchId = $lastBatch->id;
-            $lastId = $lastbatchId+1;
-        } else {
-            // Set a default value or handle the situation as per your requirements
-            $lastbatchId = 1;
-        }
-        
-        return view('admin.stocks', ['categories' => $categories, 'suppliers' => $suppliers, 'ItemStocks' => $ItemStocks, 'lastId' => $lastId, 'items' => $items]);
+        return view('admin.stocks', [
+            'categories' => $categories,
+            'suppliers' => $suppliers,
+            'items' => $items,
+            'ItemStocks' => $ItemStocks,
+            'lastId' => $lastId,
+        ]);
     }
     
     /**
@@ -222,11 +223,12 @@ class AdminController extends Controller
             'supplier_price.*' => 'required|numeric',
             'selling_price.*' => 'required|numeric',
             'no_of_stocks.*' => 'required|numeric',
+            'replenish.*' => 'required|numeric',
             'category_id.*' => 'required|exists:category,id',
             'supplier_id.*' => 'required|exists:supplier,id',
         ]);
 
-        $data = $request->only(['name', 'supplier_price', 'selling_price', 'no_of_stocks', 'category_id', 'supplier_id']);
+        $data = $request->only(['name', 'supplier_price', 'selling_price', 'no_of_stocks', 'replenish', 'category_id', 'supplier_id']);
 
         // Initialize an array to store batch order data
         $batchOrderData = [];
@@ -247,6 +249,7 @@ class AdminController extends Controller
                 'supplier_price' => $data['supplier_price'][$key],
                 'selling_price' => $data['selling_price'][$key],
                 'no_of_stocks' => $data['no_of_stocks'][$key],
+                'replenish' => $data['replenish'][$key],
                 'category_id' => $data['category_id'][$key],
                 'supplier_id' => $data['supplier_id'][$key],
             ]);
@@ -257,6 +260,7 @@ class AdminController extends Controller
                 'item_id' => $itemModel->id,
                 'supplier_id' => $data['supplier_id'][$key],
                 'category_id' => $data['category_id'][$key],
+                'replenish' => $data['replenish'][$key],
                 'qty' => $data['no_of_stocks'][$key],
                 'supplier_price' => $data['supplier_price'][$key],
                 'total' => $data['no_of_stocks'][$key] *  $data['supplier_price'][$key],
@@ -322,9 +326,14 @@ class AdminController extends Controller
                 'supplier_id' => $validatedData['supplier_id'],
                 'item_id' => $validatedData['id'],
                 'supplier_price' => $item->supplier_price,
+                'replenish' =>  $item->replenish,
                 'qty' => $validatedData['qty'],
                 'total' => $item->supplier_price * $validatedData['qty'],
             ]);
+
+            // Update the no_of_stocks in the ItemModel table
+            $remainingStocks = $item->no_of_stocks + $validatedData['qty'];
+            $item->update(['no_of_stocks' => $remainingStocks]);
 
             // Insert into the batch table
             $user = Auth::id();
@@ -375,9 +384,132 @@ class AdminController extends Controller
     /**
      * Update Stock details
      */
-    public function updateStock(Request $request)
+    public function updateStocks(Request $request)
+    {
+        $itemId = $request->input('id');
+
+        // Validate that required fields are not empty
+        if (empty($request->input('name')) ||
+        empty($request->input('supplier_price')) ||
+        empty($request->input('selling_price')) ||
+        empty($request->input('category_id')) ||
+        empty($request->input('supplier_id')) ||
+        empty($request->input('replenish'))
+        ) {
+        return redirect()->back()->with('error', 'All fields are required');
+        }
+
+        $existingItemname = ItemModel::where('name', $request->input('name'))
+        ->where('id', '<>', $itemId)
+        ->first();
+
+        if ($existingItemname) {
+            // If the item name already exists for a different item, return an error
+            return redirect()->back()->with('error', 'Item name already exists for another item');
+        }
+        
+        // Update the Item table
+        $item = ItemModel::find($itemId);
+        $item->name = $request->input('name');
+        $item->supplier_price = $request->input('supplier_price');
+        $item->selling_price = $request->input('selling_price');
+        $item->category_id = $request->input('category_id'); 
+        $item->supplier_id = $request->input('supplier_id'); 
+        $item->replenish = $request->input('replenish'); 
+        $item->save();
+
+        // Update the Batch Order table if needed
+        $batch = BatchOrderModel::where('item_id', $itemId)->first();
+       
+        if ($batch) {
+            $batch->update([
+                'category_id' => $request->input('category_id'),
+                'supplier_id' => $request->input('supplier_id'),
+                'supplier_price' => $request->input('supplier_price'),
+                'selling_price' => $request->input('selling_price'),
+                'replenish' => $request->input('replenish'),
+                'total' =>  $batch->qty * $request->input('supplier_price'),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Item updated successfully');
+    }
+
+    public function getItemsByCategory(Request $request)
+    {
+        $category_id = $request->input('category_id');
+        $items = ItemModel::where('category_id', $category_id)->get();
+        return response()->json(['items' => $items]);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RETURN ITEM FUNCTIONS
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Show stocks data
+     */
+    public  function  return(Request $request)
+    {
+        $categories = CategoryModel::where('status', 'Active')->get();
+        $suppliers = SupplierModel::where('status', 'Active')->get();
+        $ItemStocks = ItemModel::where('status', 'Active')->get();
+        $users = User::where('user_role', '3')->get();
+        $grounds = ReturnGroundsModel::all();
+
+        return view('admin.return', [
+            'categories' => $categories,
+            'suppliers' => $suppliers,
+            'users' => $users,
+            'ItemStocks' => $ItemStocks,
+            'grounds' => $grounds,
+        ]);
+    }
+
+    /**
+     * Store return item
+     */
+    public  function  AddReturn(Request $request)
     {
 
+        // Validation rules
+        $rules = [
+            'date_purchased' => 'required|date',
+            'date_returned' => 'required|date',
+            'item_id' => 'required',
+            'transaction_id' => 'required',
+            'user_id' => 'required',
+        ];
+
+        $request->validate($rules);
+
+        // Check if the transaction_id already exists
+        $existingReturnItem = ReturnItemModel::where('transaction_id', $request->input('transaction_id'))->first();
+
+        if ($existingReturnItem) {
+
+            ReturnItemModel::create([
+                'date_purchased' => $request->input('date_purchased'),
+                'date_returned' => $request->input('date_returned'),
+                'item_id' => $request->input('item_id'),
+                'transaction_id' => $request->input('transaction_id'),
+                'user_id' => $request->input('user_id'),
+            ]);
+    
+            return redirect()->back()->with('success', 'Return item added successfully!');            
+        }
+        else
+        {
+            return redirect()->back()->with('error', 'Transaction ID already exists. Please Enter the correct number.');
+
+        }
+
+        
+           
+        
     }
     
 }

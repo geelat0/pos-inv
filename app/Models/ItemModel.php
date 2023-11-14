@@ -20,6 +20,7 @@ class ItemModel extends Model
         'supplier_price',
         'selling_price',
         'no_of_stocks',
+        'replenish',
         'status',
         'updated_at',
         'created_at',

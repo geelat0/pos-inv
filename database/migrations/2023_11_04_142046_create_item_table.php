@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('supplier_price')->default(0.00);
             $table->decimal('selling_price')->default(0.00);
             $table->integer('no_of_stocks');
+            $table->integer('replenish');
             $table->string('status')->default('Active');
             $table->timestamps();
 

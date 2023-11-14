@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryModel extends Model
+class ReturnGroundsModel extends Model
 {
     use HasFactory;
-    protected $table ='category';
+    protected $table ='return_grounds';
 
     /**
      * The attributes that are mass assignable.
@@ -16,16 +16,9 @@ class CategoryModel extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'category_name',
+        'title',
+        'desc',
         'updated_at',
-        'status',
         'created_at',
     ];
-
-    public function items()
-    {
-        return $this->hasMany(ItemModel::class);
-    }
-
-    
 }

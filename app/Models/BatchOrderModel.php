@@ -20,6 +20,7 @@ class BatchOrderModel extends Model
         'supplier_id',
         'category_id',
         'item_id',
+        'replenish',
         'qty',
         'supplier_price',
         'total',

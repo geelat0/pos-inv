@@ -42,11 +42,15 @@ Route::group([
     Route::post('/update_supplier', [AdminController::class, 'updateSupplier']);
 
     Route::get('/stocks', [AdminController::class, 'stocks']);
+    Route::get('/getItem', [AdminController::class, 'getItemsByCategory']);
     Route::post('/add-stocks', [AdminController::class, 'storeStocks']);
     Route::post('/restocks', [AdminController::class, 'storeRestock']);
     Route::post('/stock-status', [AdminController::class, 'StockStatus']);
     Route::post('/item-status', [AdminController::class, 'ItemStatus']);
-    Route::post('/update_item', [AdminController::class, 'updateItem']);
+    Route::post('/update_item', [AdminController::class, 'updateStocks']);
+
+    Route::get('/return', [AdminController::class, 'return']);
+    Route::post('/add-return', [AdminController::class, 'AddReturn']);
 });
 
 //  manager

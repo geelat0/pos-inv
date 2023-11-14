@@ -1,3 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins&display=swap');
+
+body{
+  font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
+}
+
+.page-title{
+  margin: 2%;
+  font-weight: bold;
+  letter-spacing: 10px;
+  font-size: 24px !important;
+  color: #3b3b3b;
+}
+
 .btn-add-user{
   background-color: #2b3499 !important;
   width: 15%;
@@ -172,12 +188,35 @@ label{
   font-size: 12px;
 }
 
+/* graph css */
+.graph-container{
+  padding: 20px;
+}
+
+.row-card{
+  margin: 2%;
+}
+
+.monthly-sale-card{
+  box-shadow: 10px 10px 18px -7px rgba(0,0,0,0.47);
+  -webkit-box-shadow: 10px 10px 18px -7px rgba(0,0,0,0.47);
+  -moz-box-shadow: 10px 10px 18px -7px rgba(0,0,0,0.47);
+}
+
+.bi-trash-fill{
+  color: #ff0000;
+}
+
 /* tablet-responsive */
 @media (min-width: 768px) and (max-width: 1024px) {
   .btn-add-user{
     background-color: #2b3499 !important;
     width: 50%;
     color: #fff!important;
+  }
+
+  .card-growth-svg{
+    margin-top: 20px;
   }
 }
 
@@ -206,5 +245,27 @@ label{
 
   .add-new-item-field{
     margin-bottom: 10px;
+  }
+
+    /* graph css */
+  .graph-container{
+    padding: 10px;
+  }
+
+  .sales-card{
+    margin: 2%;
+  }
+
+  .col-end-date{
+    margin-bottom: 10px;
+  }
+
+  .btn-filter-date{
+    width: 100% !important;
+    margin-bottom: 10px;
+  }
+
+  .card-growth-svg{
+    margin-top: 20px;
   }
 }

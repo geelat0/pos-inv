@@ -149,7 +149,7 @@
                         <div>
                         <form id="new-category" method="post" action="/admin/update_supplier">
                         @csrf
-                                <input type="hidden" name="id" value="{{ $item->id }}">
+                            <input type="hidden" name="id" value="{{ $item->id }}">
                             <div class="mb-3">
                                 <input type="text" name="supplier_name" value="{{ $item->supplier_name }}" class="form-control" id="" placeholder="Supplier Name" required>
                             </div>

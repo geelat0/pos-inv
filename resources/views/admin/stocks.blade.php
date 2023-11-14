@@ -101,21 +101,28 @@
                                 </div>
                                 
                                 <div class="row border-bottom add-new-item-form">
-                                    <div class="col-sm-4 nopadding add-new-item-field">
+                                    <div class="col-sm-3 nopadding add-new-item-field">
                                         <div class="form-group">
                                         <label for="">Buying Price</label>
                                         <input type="text" class="form-control" id="supplier_price" name="supplier_price[]" value="" placeholder="Enter Buying Price">
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4 nopadding add-new-item-field">
+                                    <div class="col-sm-3 nopadding add-new-item-field">
                                         <div class="form-group">
                                         <label for="">Selling Price</label>
                                         <input type="text" class="form-control" id="selling_price" name="selling_price[]" value="" placeholder="Enter Selling Price">
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4 nopadding add-new-item-field mb-3">
+                                    <div class="col-sm-3 nopadding add-new-item-field mb-3">
+                                        <div class="form-group">
+                                        <label for="">Replenishment Threshold</label>
+                                        <input type="number" class="form-control" id="replenish" name="replenish[]" value="" placeholder="">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-3 nopadding add-new-item-field mb-3">
                                         <div class="form-group">
                                         <label for="">Item Quantity</label>
                                         <input type="number" class="form-control" id="no_of stocks" name="no_of stocks[]" value="" placeholder="">
@@ -160,6 +167,7 @@
                                     <th>Buying Price</th>
                                     <th>Selling Price</th>
                                     <th>Stocks</th>
+                                    <th>Replenishment Threshold</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -173,6 +181,13 @@
                                     <td>{{ $item->supplier_price}}</td>
                                     <td>{{ $item->selling_price}}</td>
                                     <td>{{ $item->no_of_stocks}}</td>
+                                    <td>
+                                        @if ($item->no_of_stocks == $item->replenish)
+                                            <span class="badge badge-danger">Need Restocking</span>
+                                        @else
+                                            <span class="badge badge-success">Item Full</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($item->status === 'Active')
                                             <span class="badge badge-success">Item Enabled</span>
@@ -213,9 +228,9 @@
                         <div class="mb-3">
                             <select class="selectpicker form-control" id="category_id " name="category_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                 <option selected="true" disabled="disabled">Select Category</option>
-                                @foreach ($categories as $item )
-                                    <option value="{{ $item->id }}">{{ $item->category_name }}</option>
-                                 @endforeach
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
@@ -229,7 +244,7 @@
                         <div class="mb-3">
                             <select class="selectpicker form-control" id="id " name="id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                 <option selected="true" disabled="disabled">Select Item</option>
-                                @foreach ($ItemStocks as $item )
+                                @foreach ($ItemStocks as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
@@ -242,13 +257,13 @@
                             <label for="">Item Quantity</label>
                             <input type="number" class="form-control" name= 'qty' id="" placeholder="" required>
                         </div>
-                    </div>
-                </div>
-                    <!-- Modal Footer (optional) -->
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Restock Item</button>
-                    </div>
-                </form>
+                        </div>
+                        </div>
+                        <!-- Modal Footer (optional) -->
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Restock Item</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -266,16 +281,20 @@
                     <!-- Modal Body -->
                     <div class="modal-body">
                         <div>
-                        <input type="" class="form-control" id="" value="{{$item->id}}"  readonly>
-
+                        <form id="new-category" action="/admin/update_item" method="post">
+                        @csrf
+                        @method('post')
+                                <input type="hidden" name="id" value="{{ $item->id }}">
+                            <div class="mb-3">
+                                <label for="">Item Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ $item->name }}" placeholder="Update name">
+                            </div>
                             <div class="mb-3">
                                 <label for="">Item Quantity</label>
                                 <input type="number" class="form-control" id="" value="{{$item->no_of_stocks}}"  readonly>
                             </div>
-                        
-                        <form id="new-category" action="">
                             <div class="mb-3">
-                                <select class="selectpicker form-control" data-live-search="true" data-style="btn-primary" data-width="200px" required>
+                                <select class="selectpicker form-control" id= "category_id" name = "category_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                         <option selected="true" disabled="disabled">Select Category</option>
                                     <@foreach ($categories as $item )
                                         <option value="{{ $item->id }}">{{ $item->category_name }}</option>
@@ -284,7 +303,7 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <select class="selectpicker form-control" data-live-search="true" data-style="btn-primary" data-width="200px" required>
+                                <select class="selectpicker form-control" id= "supplier_id" name= "supplier_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                     <option selected="true" disabled="disabled">Select Supplier</option>
                                     @foreach ($suppliers as $item )
                                         <option value="{{ $item->id }}">{{ $item->supplier_name }}</option>
@@ -293,13 +312,14 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Update name">
+                                <input type="text" class="form-control" id="supplier_price" name="supplier_price"  placeholder="Update Buying Price">
                             </div>
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="" name="supplier_price"  placeholder="Update Buying Price">
+                                <input type="text" class="form-control" id="supplier_price"  name="selling_price" placeholder="Update Selling Price">
                             </div>
                             <div class="mb-3">
-                                <input type="text" class="form-control" id=""  name="selling_price" placeholder="Update Selling Price">
+                                <label for="">Replenishment Threshold</label>
+                                <input type="number" class="form-control" id="replenish" name="replenish" placeholder="Update replenishment threshold">
                             </div>
                         </div>
                     </div>
@@ -352,14 +372,12 @@
                 var divtest = document.createElement("div");
                 divtest.setAttribute("class", "form-group removeclass"+room);
                 var rdiv = 'removeclass'+room;
-                divtest.innerHTML = '<h4 class="mt-3" style="font-weight: bold; font-size: 24px; color: #ff6c22;">Adding New Item</h4> <div class="row mt-3 add-new-item-form"> <div class="col-sm-6 nopadding add-new-item-form-select"> <div class="form-group"> <div class="input-group"> <select class="form-control" id="category_id" name="category_id[]"> <option value="">Select Category</option> @foreach ($categories as $item ) <option value="{{ $item->id }}">{{ $item->category_name }}</option> @endforeach </select> </div> </div> </div> <div class="col-sm-6 nopadding add-new-item-form-select"> <div class="form-group"> <div class="input-group"> <select class="form-control" id="supplier_id" name="supplier_id[]"> <option value="">Select Supplier</option> @foreach ($suppliers as $item ) <option value="{{ $item->id }}">{{ $item->supplier_name }}</option> @endforeach </select> </div> </div> </div> </div> <div class="row add-new-item-form"> <div class="col-sm-6 nopadding add-new-item-field"> <div class="form-group"> <label for="">Item Name</label> <input type="text" class="form-control" id="name" name="name[]" value="" placeholder="Enter item name"> </div> </div> <div class="col-sm-6 nopadding add-new-item-field"> <div class="form-group"> <label for="">Order batch #</label> <input type="text" class="form-control" id="batch" name="batch[]" value="{{ $lastId }}" readonly> </div> </div> </div> <div class="row add-new-item-form"> <div class="col-sm-4 nopadding add-new-item-field"> <div class="form-group"> <label for="">Buying Price</label> <input type="text" class="form-control" id="supplier_price" name="supplier_price[]" value="" placeholder="Enter Buying Price"> </div> </div> <div class="col-sm-4 nopadding add-new-item-field"> <div class="form-group"> <label for="">Selling Price</label> <input type="text" class="form-control" id="selling_price" name="selling_price[]" value="" placeholder="Enter Selling Price"> </div> </div> <div class="col-sm-4 nopadding add-new-item-field"> <div class="form-group"> <label for="">Item Quantity</label> <input type="number" class="form-control" id="no_of stocks" name="no_of stocks[]" value="" placeholder=""> </div> </div> </div> <div class="mt-4 mb-2 d-flex justify-content-center"><button class="btn btn-sm btn-danger" type="button" onclick="remove_add_category('+ room +');" style="width:100%;"> <span class="glyphicon glyphicon-minus" aria-hidden="true">&nbsp;</span>Remove Form</button></div><div class="clear"></div>';                
-                objTo.appendChild(divtest)
-            }
+                divtest.innerHTML = ' <h4 class="mt-3" style="font-weight: bold; font-size: 24px; color: #ff6c22;">Adding New Item</h4> <div class="row mt-3 add-new-item-form"> <div class="col-sm-6 nopadding add-new-item-form-select"> <div class="form-group"> <div class="input-group"> <select class="form-control" id="category_id" name="category_id[]"> <option value="">Select Category</option> @foreach ($categories as $item ) <option value="{{ $item->id }}">{{ $item->category_name }}</option> @endforeach </select> </div> </div> </div> <div class="col-sm-6 nopadding add-new-item-form-select"> <div class="form-group"> <div class="input-group"> <select class="form-control" id="supplier_id" name="supplier_id[]"> <option value="">Select Supplier</option> @foreach ($suppliers as $item ) <option value="{{ $item->id }}">{{ $item->supplier_name }}</option> @endforeach </select> </div> </div> </div> </div> <div class="row add-new-item-form"> <div class="col-sm-6 nopadding add-new-item-field"> <div class="form-group"> <label for="">Item Name</label> <input type="text" class="form-control" id="name" name="name[]" value="" placeholder="Enter item name"> </div> </div> <div class="col-sm-6 nopadding add-new-item-field"> <div class="form-group"> <label for="">Order batch #</label> <input type="text" class="form-control" id="batch" name="batch[]" value="{{ $lastId }}" readonly> </div> </div> </div> <div class="row add-new-item-form"> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Buying Price</label> <input type="text" class="form-control" id="supplier_price" name="supplier_price[]" value="" placeholder="Enter Buying Price"> </div> </div> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Selling Price</label> <input type="text" class="form-control" id="selling_price" name="selling_price[]" value="" placeholder="Enter Selling Price"> </div> </div> <div class="col-sm-3 nopadding add-new-item-field mb-3"> <div class="form-group"> <label for="">Replenishment Threshold</label> <input type="number" class="form-control" id="replenish" name="replenish[]" value="" placeholder=""> </div> </div> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Item Quantity</label> <input type="number" class="form-control" id="no_of stocks" name="no_of stocks[]" value="" placeholder=""> </div> </div> </div> <div class="mt-4 mb-2 d-flex justify-content-center"> <button class="btn btn-sm btn-danger" type="button" onclick="remove_add_category('+ room +');" style="width:100%;"> <span class="glyphicon glyphicon-minus" aria-hidden="true">&nbsp;</span>Remove Form </button> </div> <div class="clear"></div>'; 
+                objTo.appendChild(divtest)            }
             function remove_add_category(rid) {
                 $('.removeclass'+rid).remove();
             }
         </script>
-
 
         <!-- MODAL SCRIPT -->
         <script>

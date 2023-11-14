@@ -26,6 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('item_id');
             $table->foreign('item_id')->references('id')->on('item');
 
+            $table->integer('replenish');
             $table->integer('qty');
             $table->decimal('supplier_price');
             $table->decimal('total');
