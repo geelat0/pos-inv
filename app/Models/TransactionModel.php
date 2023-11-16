@@ -10,4 +10,20 @@ class TransactionModel extends Model
     use HasFactory;
 
     protected $table = 'transaction';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'id',
+        'user_id',
+        'timestamp',
+        'total_amount',
+        'total_profit',
+        'total_amount_with_discount',
+        'updated_at',
+        'created_at',
+    ];
 }

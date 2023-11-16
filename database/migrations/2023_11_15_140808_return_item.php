@@ -20,9 +20,10 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
 
             $table->unsignedBigInteger('transaction_id');
-            $table->foreign('transaction_id')->references('id')->on('transaction');
-            
-            $table->unsignedBigInteger('return_ground_id');
+            // $table->foreign('transaction_id')->references('id')->on('transaction');
+
+            $table->string('return_ground');
+            // $table->foreign('return_ground_id')->references('id')->on('return_grounds');
 
             $table->string('status')->default('Active');
             $table->dateTime('purchase_date');

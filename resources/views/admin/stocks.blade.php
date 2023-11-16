@@ -226,7 +226,7 @@
                         @csrf
                         @method('post')
                         <div class="mb-3">
-                            <select class="selectpicker form-control" id="category_id " name="category_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
+                            <select class="selectpicker form-control" id="category" name="category_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                 <option selected="true" disabled="disabled">Select Category</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->category_name }}</option>
@@ -234,7 +234,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <select class="selectpicker form-control"  id="supplier_id " name="supplier_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
+                            <select class="selectpicker form-control"  id="supplier" name="supplier_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                 <option selected="true" disabled="disabled">Select Supplier</option>
                                 @foreach ($suppliers as $item )
                                     <option value="{{ $item->id }}">{{ $item->supplier_name }}</option>
@@ -242,10 +242,10 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <select class="selectpicker form-control" id="id " name="id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
+                            <select class="selectpicker form-control" id="item" name="id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                 <option selected="true" disabled="disabled">Select Item</option>
                                 @foreach ($ItemStocks as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -391,6 +391,57 @@
             $(document).ready(function() {
                 $('#example').DataTable();
             });
+        </script>
+
+        <script>
+                $(document).ready(function () {
+                    // Populate categories
+                    $.get('/get-categories', function (data) {
+                        data.forEach(function (category) {
+                            $('#category').append($('<option>', {
+                                value: category.id,
+                                text: category.name
+                            }));
+                        });
+                    });
+
+                    // Populate suppliers based on selected category
+                    $('#category').on('change', function () {
+                        var category_id = $(this).val();
+
+                        $.get('/get-suppliers', { category_id: category_id }, function (data) {
+                            // Clear previous options
+                            $('#supplier').empty();
+
+                            // Populate suppliers
+                            data.forEach(function (supplier) {
+                                $('#supplier').append($('<option>', {
+                                    value: supplier.id,
+                                    text: supplier.name
+                                }));
+                            });
+                        });
+                    });
+
+                    // Populate items based on selected category and supplier
+                    $('#supplier').on('change', function () {
+                        var category_id = $('#category').val();
+                        var supplier_id = $(this).val();
+
+                        $.get('/admin/getItems', { category_id: category_id, supplier_id: supplier_id }, function (data) {
+                            // Clear previous options
+                            $('#item').empty();
+
+                            // Populate items
+                            data.forEach(function (item) {
+                                $('#item').append($('<option>', {
+                                    value: item.id,
+                                    text: item.name
+                                }));
+                            });
+                        });
+                    });
+                });
         </script>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

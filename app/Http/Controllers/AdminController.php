@@ -10,6 +10,7 @@ use App\Models\SupplierModel;
 use App\Models\BatchOrderModel;
 use App\Models\ReturnGroundsModel;
 use App\Models\ReturnItemModel;
+use App\Models\TransactionModel;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -198,7 +199,8 @@ class AdminController extends Controller
     {
         $categories = CategoryModel::where('status', 'Active')->get();
         $suppliers = SupplierModel::where('status', 'Active')->get();
-        $ItemStocks = ItemModel::where('status', 'Active')->get();
+        DB::statement("SET SQL_MODE=''");
+        $ItemStocks = ItemModel::where('status', 'Active')->groupby('name')->get();
         $items = ItemModel::with('category', 'supplier')->get();
 
         $lastBatch = BatchModel::latest('id')->first();
@@ -211,6 +213,22 @@ class AdminController extends Controller
             'ItemStocks' => $ItemStocks,
             'lastId' => $lastId,
         ]);
+    }
+
+    public function getItems(Request $request)
+    {
+        $category_id = $request->input('category_id');
+        $supplier_id = $request->input('supplier_id');
+
+        $items = ItemModel::when($category_id, function ($query) use ($category_id) {
+            $query->where('category_id', $category_id);
+        })->when($supplier_id, function ($query) use ($supplier_id) {
+            $query->where('supplier_id', $supplier_id);
+        })->when($category_id && $supplier_id, function ($query) use ($category_id, $supplier_id) {
+        $query->where('no_of_stocks', '=', DB::raw('replenish'));
+    })->get();
+
+        return response()->json($items);
     }
     
     /**
@@ -235,9 +253,11 @@ class AdminController extends Controller
 
         // Insert into the Item table and prepare batch order data
         foreach ($data['name'] as $key => $item) {
+
             // Check if the item already exists
             $existingItem = ItemModel::where('name', $item)
                 ->where('supplier_id', $data['supplier_id'][$key])
+                ->where('category_id', $data['category_id'][$key])
                 ->first();
 
             if ($existingItem) {
@@ -435,13 +455,6 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Item updated successfully');
     }
 
-    public function getItemsByCategory(Request $request)
-    {
-        $category_id = $request->input('category_id');
-        $items = ItemModel::where('category_id', $category_id)->get();
-        return response()->json(['items' => $items]);
-    }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -452,13 +465,16 @@ class AdminController extends Controller
     /**
      * Show stocks data
      */
-    public  function  return(Request $request)
+    public  function  return()
     {
         $categories = CategoryModel::where('status', 'Active')->get();
         $suppliers = SupplierModel::where('status', 'Active')->get();
         $ItemStocks = ItemModel::where('status', 'Active')->get();
         $users = User::where('user_role', '3')->get();
         $grounds = ReturnGroundsModel::all();
+        $return_items = ReturnItemModel::with('item','user')
+        ->where('status', 'Active')
+        ->get();
 
         return view('admin.return', [
             'categories' => $categories,
@@ -466,50 +482,111 @@ class AdminController extends Controller
             'users' => $users,
             'ItemStocks' => $ItemStocks,
             'grounds' => $grounds,
+            'return_items' => $return_items,
         ]);
     }
 
     /**
      * Store return item
      */
-    public  function  AddReturn(Request $request)
+    public function addReturn(Request $request)
     {
+            // Validate that required fields are not empty
+            if (empty($request->input('transaction_id')) ||
+            empty($request->input('purchased_date')) ||
+            empty($request->input('return_date')) ||
+            empty($request->input('ground_id')) ||
+            empty($request->input('item_id')) ||
+            empty($request->input('user_id'))
+            ) {
+            return redirect()->back()->with('error', 'All fields are required');
+            }
 
-        // Validation rules
-        $rules = [
-            'date_purchased' => 'required|date',
-            'date_returned' => 'required|date',
-            'item_id' => 'required',
+
+        // Validate the form data
+        $request->validate([
             'transaction_id' => 'required',
+            'purchased_date' => 'required|date',
+            'return_date' => 'required|date',
+            'ground_id' => 'required',
+            'item_id' => 'required',
             'user_id' => 'required',
-        ];
+        ]);
 
-        $request->validate($rules);
+        // Check if the transaction ID exists in the transaction table
+        // $transactionExists = TransactionModel::where('id', $request->input('transaction_id'))->exists();
 
-        // Check if the transaction_id already exists
-        $existingReturnItem = ReturnItemModel::where('transaction_id', $request->input('transaction_id'))->first();
+        // if (!$transactionExists) {
+        //     // If the transaction ID doesn't exist, return an error message
+        //     return redirect()->back()->with('error', 'Transaction ID does not exist');
+        // }
 
-        if ($existingReturnItem) {
+        // Create a new instance of the Return model
+        $return = new ReturnItemModel;
 
-            ReturnItemModel::create([
-                'date_purchased' => $request->input('date_purchased'),
-                'date_returned' => $request->input('date_returned'),
-                'item_id' => $request->input('item_id'),
-                'transaction_id' => $request->input('transaction_id'),
-                'user_id' => $request->input('user_id'),
-            ]);
-    
-            return redirect()->back()->with('success', 'Return item added successfully!');            
+        // Set the values from the form
+        $return->transaction_id = $request->input('transaction_id');
+        $return->purchase_date = $request->input('purchased_date');
+        $return->return_date = $request->input('return_date');
+        $return->return_ground = $request->input('ground_id');
+        // $return->category_id = $request->input('category_id');
+        $return->item_id = $request->input('item_id');
+        $return->user_id = $request->input('user_id');
+
+        // Save the return data to the database
+        $return->save();
+
+        // Redirect back or to a specific route after submission
+        return redirect()->back()->with('success', 'Item Return successfully');
+    }
+
+    /**
+     * Create New Return Grounds
+     */
+    public function storeReturnGrounds(Request $request)
+    {
+       $data = $request->validate([
+            'title' => 'required|unique:return_grounds,title',
+            'desc' => 'required|unique:return_grounds,desc',
+       ]);
+
+        ReturnGroundsModel::create($data);
+
+        return redirect()->back()->with('success', 'Return Ground added successfully');
+    }
+
+    /**
+     * Remove Retrun item
+     */
+    public function removereturnItem(Request $request)
+    {
+        $returnId = $request->input('id');
+        $newStatus = $request->input('new_status');
+
+        // Find the category by its ID
+        $return = ReturnItemModel::find($returnId);
+
+        if (!$return) {
+            return redirect()->back()->with('error', 'Item not found.');
         }
-        else
-        {
-            return redirect()->back()->with('error', 'Transaction ID already exists. Please Enter the correct number.');
 
-        }
+        // Update the category status
+        $return->status = $newStatus;
+        $return->save();
 
-        
-           
-        
+        return redirect()->back()->with('success', 'Item deleted successfully.');
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->get('query');
+        DB::statement("SET SQL_MODE=''");
+        $items = ItemModel::where('name', 'like', "%$query%")
+                            ->where('status', 'Active')
+                            ->groupby('name')
+                            ->get();
+
+        return response()->json($items);
     }
     
 }

@@ -24,4 +24,9 @@ class SupplierModel extends Model
         'status',
         'created_at',
     ];
+
+    public function items()
+    {
+        return $this->hasMany(ItemModel::class);
+    }
 }

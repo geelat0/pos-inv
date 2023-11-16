@@ -32,26 +32,33 @@ Route::group([
 
     Route::get('/', [AdminController::class, 'index']); // sample
 
+    // Category Module
     Route::get('/item-category', [AdminController::class, 'item_category']);
     Route::post('/store-category', [AdminController::class, 'storeCategory']);
     Route::post('/category-status', [AdminController::class, 'CategoryStatus']);
     Route::post('/update_category', [AdminController::class, 'updateCategory']);
 
+    // Supplier Module
     Route::get('/supplier', [AdminController::class, 'supplier']);
     Route::post('/store-supplier', [AdminController::class, 'storeSupplier']);
     Route::post('/supplier-status', [AdminController::class, 'SupplierStatus']);
     Route::post('/update_supplier', [AdminController::class, 'updateSupplier']);
 
+    // Stocks Module
     Route::get('/stocks', [AdminController::class, 'stocks']);
-    Route::get('/getItem', [AdminController::class, 'getItemsByCategory']);
+    Route::get('/getItems', [AdminController::class, 'getItems']);
     Route::post('/add-stocks', [AdminController::class, 'storeStocks']);
     Route::post('/restocks', [AdminController::class, 'storeRestock']);
     Route::post('/stock-status', [AdminController::class, 'StockStatus']);
     Route::post('/item-status', [AdminController::class, 'ItemStatus']);
     Route::post('/update_item', [AdminController::class, 'updateStocks']);
 
+    // Return Item Module
     Route::get('/return', [AdminController::class, 'return']);
     Route::post('/add-return', [AdminController::class, 'AddReturn']);
+    Route::post('/add-grounds', [AdminController::class, 'storeReturnGrounds']);
+    Route::post('/remove', [AdminController::class, 'removereturnItem']);
+    Route::get('/search', [AdminController::class, 'search']);
 
 
     // user management

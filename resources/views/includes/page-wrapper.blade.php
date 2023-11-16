@@ -6,7 +6,7 @@
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                                 <li class="nav-item active"><a class="nav-link" href="#">Profile</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{url('logout')}}">Logout</a></li>
                             </ul>
                         </div>
                     </div>

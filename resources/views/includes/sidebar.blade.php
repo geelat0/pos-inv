@@ -9,7 +9,7 @@
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin/supplier')}}"><i class="bi bi-truck">&nbsp;</i>Supplier</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin/item-category')}}"><i class="bi bi-list-ol">&nbsp;</i>Item Category</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin/return')}}"><i class="bi bi-cart-fill">&nbsp;</i>Returned Items</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="user-management.php"><i class="bi bi-people-fill">&nbsp;</i>System Users</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin/user-management')}}"><i class="bi bi-people-fill">&nbsp;</i>System Users</a>
                 </div>
             </div>
             <!-- Page content wrapper-->

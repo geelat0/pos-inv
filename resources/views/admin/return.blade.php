@@ -38,7 +38,17 @@
         @include('includes.sidebar')
         @include('includes.page-wrapper')
                               <!-- Page content-->
-                              <div class="container-fluid">
+                <div class="container-fluid">
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    <p>{{ session('success') }}</p>
+                                </div> 
+                            @endif
+                            @if(session('error'))
+                                <div class="alert alert-danger">
+                                    <p>{{ session('error') }}</p>
+                                </div> 
+                            @endif
                         <div class="row row-add-user d-flex flex-row-reverse">
                             <button type="button" class="btn btn-add-user" data-bs-toggle="modal" data-bs-target="#return-item">Add Item</button>
                         </div>
@@ -55,22 +65,16 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            @foreach ($return_items as $item )
                                 <tr>
-                                    <td>11/01/2023</td>
-                                    <td>11/12/2023</td>
-                                    <td>Item1</td>
-                                    <td>Defective</td>
-                                    <td>Employee1</td>
-                                    <td><button type="button" class="btn btn-upd-user" data-toggle="tooltip" data-placement="top" title="Remove" data-bs-toggle="modal" data-bs-target="#remove"><i class="bi bi-trash-fill"></i></button></td>
+                                    <td>{{$item->purchase_date}}</td>
+                                    <td>{{$item->return_date}}</td>
+                                    <td>{{$item->item->name}}</td>
+                                    <td>{{$item->return_ground}}</td>
+                                    <td>{{ $item->user->first_name . ' ' . $item->user->last_name }}</td>
+                                    <td><button type="button" class="btn btn-upd-user" data-toggle="tooltip" data-placement="top" title="Remove" data-bs-toggle="modal" data-bs-target="#remove{{ $item->id }}"><i class="bi bi-trash-fill"></i></button></td>
                                 </tr>
-                                <tr>
-                                    <td>11/01/2023</td>
-                                    <td>11/12/2023</td>
-                                    <td>Item1</td>
-                                    <td>Defective</td>
-                                    <td>Employee1</td>
-                                    <td><button type="button" class="btn btn-upd-user" data-toggle="tooltip" data-placement="top" title="Remove" data-bs-toggle="modal" data-bs-target="#remove"><i class="bi bi-trash-fill"></i></button></td>
-                                </tr>
+                            @endforeach
                         </table>
                     </div>
                     <div style="margin-top: 3%;">
@@ -84,11 +88,13 @@
                                         <div class="d-flex justify-content-end">
                                             <button type="button" class="btn btn-add-user" data-bs-toggle="modal" data-bs-target="#add-return-ground" style="width: 20%;">Add Return Grounds</button>
                                         </div>
+                                        @foreach ($grounds as $item )
                                         <ul>
-                                            <li><h6><b>Defective or Faulty Product:&nbsp;</b><small>The product is damaged, malfunctioning, or does not meet quality standards.</small></h6></li>
-                                            <li><h6><b>Wrong Item Shipped:&nbsp;</b><small>The customer receives a product that is different from what they ordered.</small></h6></li>
-                                            <li><h6><b>Damage During Shipping:&nbsp;</b><small>The product is damaged upon buying.</small></h6></li>
+                                       
+                                            <li><h6><b>{{$item->title}}:&nbsp;</b><small>{{$item->desc}}</small></h6></li>
+                                        
                                         </ul>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -131,34 +137,24 @@
                               <select class="selectpicker form-control"  name="ground_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                   <option selected="true" disabled="disabled">Reason</option>
                                   <@foreach ($grounds as $item )
-                                        <option value="{{ $item->id }}">{{ $item->title }}</option>
+                                        <option value="{{ $item->title }}">{{ $item->title }}</option>
                                     @endforeach
                                   <!-- Add more options as needed -->
                               </select>
                           </div>
                           <div class="mb-3">
-                              <select class="selectpicker form-control" name="category_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
-                                  <option selected="true" disabled="disabled">Select Category</option>
-                                  <@foreach ($categories as $item )
-                                        <option value="{{ $item->id }}">{{ $item->category_name }}</option>
-                                    @endforeach
-                                  <!-- Add more options as needed -->
-                              </select>
-                          </div>
-                          <div class="mb-3">
-                              <select class="selectpicker form-control" name="item_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
-                                  <option selected="true" disabled="disabled">Select Item</option>
-                                  <@foreach ($ItemStocks as $item )
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach
-                                  <!-- Add more options as needed -->
-                              </select>
+
+                            <!-- need UI   -->
+                            <input type="text" id="item-search" name = "query" placeholder="Search items...">
+                            <ul id="item-list"></ul>
+                            <input type="hidden" name="item_id" id="selected-item-id">
+
                           </div>
                           <div class="mb-3">
                               <select class="selectpicker form-control" name="user_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                   <option selected="true" disabled="disabled">Purchased To</option>
                                   <@foreach ($users as $item )
-                                        <option value="{{ $item->id }}">{{ $item->first_name }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->first_name . ' ' . $item->last_name }}</option>
                                     @endforeach
                                   <!-- Add more options as needed -->
                               </select>
@@ -186,14 +182,16 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <!-- Modal Body -->
-                <form id="">
+                <form id="" action = "/admin/add-grounds" method="post">
+                @csrf
+                @method('post')
                   <div class="modal-body">
                       <div>
                           <div class="mb-3">
-                              <input type="text" class="form-control" id="" placeholder="Add Ground Title" required>
+                              <input type="text" class="form-control" id="" name = "title" placeholder="Add Ground Title" required>
                           </div>
                           <div class="mb-3">
-                            <textarea class="form-control" id="Input description" rows="3"></textarea>
+                            <textarea class="form-control" id="Input description" name="desc" rows="3"></textarea>
                           </div>
                       </div>
                   </div>
@@ -207,28 +205,35 @@
         </div>
 
         <!-- REMOVE ITEM -->
-
-        <div class="modal" id="remove">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <!-- Modal Header -->
-                    <div class="modal-header border-0">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <!-- Modal Body -->
-                    <div class="modal-body">
-                        <div>
-                            <h5 class="d-flex justify-content-center">Are you sure you want to Remove this Item?</h5>
+        @foreach ($return_items as $item )
+            <div class="modal" id="remove{{ $item->id }}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header border-0">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                    </div>
-                    <!-- Modal Footer (optional) -->
-                    <div class="modal-footer d-flex justify-content-center border-0">
-                        <button type="button" class="btn btn-dark" style="width: 20%;">Yes</button>
-                        <button type="button" class="btn btn-danger" style="width: 40%;">No</button>
+                        <!-- Modal Body -->
+                        <div class="modal-body">
+                            <div>
+                                <h5 class="d-flex justify-content-center">Are you sure you want to Remove this Item?</h5>
+                            </div>
+                        </div>
+                        <!-- Modal Footer (optional) -->
+
+                        <form method="post" action="/admin/remove">
+                            @csrf
+                                <div class="modal-footer d-flex justify-content-center border-0">
+                                    <input type="hidden" name="new_status" value="{{ $item->status === 'Active' ? 'Inactive' : 'Active' }}">
+                                    <input type="hidden" name="id" value="{{ $item->id }}">
+                                    <button type="submit" class="btn btn-dark" style="width: 20%;">Yes</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="width: 40%;">No</button>
+                                </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
+        @endforeach
 
         <!-- MODAL SCRIPT -->
         <script>
@@ -243,6 +248,45 @@
                 $('#example').DataTable();
             });
         </script>
+
+      
+
+        <script>
+            $(document).ready(function () {
+                $('#item-search').on('input', function () {
+                    var searchTerm = $(this).val();
+
+                    $.ajax({
+                        url: '/admin/search',
+                        type: 'GET',
+                        data: {term: searchTerm},
+                        success: function (response) {
+                            displayItems(response);
+                        }
+                    });
+                });
+
+                function displayItems(items) {
+                    var itemList = $('#item-list');
+                    itemList.empty();
+
+                    items.forEach(function (item) {
+                        // Only display items whose names start with the inputted term
+                        if (item.name.toLowerCase().startsWith($('#item-search').val().toLowerCase())) {
+                            var listItem = $('<li>')
+                                .text(item.name)
+                                .click(function () {
+                                    $('#item-search').val(item.name);
+                                    $('#selected-item-id').val(item.id);
+                                    itemList.empty();
+                                });
+
+                            itemList.append(listItem);
+                        }
+                    });
+                }
+            });
+    </script>
 
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

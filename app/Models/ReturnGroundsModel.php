@@ -16,6 +16,7 @@ class ReturnGroundsModel extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'title',
         'desc',
         'updated_at',
