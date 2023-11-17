@@ -2,26 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\ItemModel;
 use App\Models\BatchModel;
 use Illuminate\Http\Request;
 use App\Models\CategoryModel;
 use App\Models\SupplierModel;
 use App\Models\BatchOrderModel;
-use App\Models\ReturnGroundsModel;
 use App\Models\ReturnItemModel;
 use App\Models\TransactionModel;
-use App\Models\User;
+use App\Models\ReturnGroundsModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-class AdminController extends Controller
+class ManagerController extends Controller
 {
-
     public  function  index()
     {
-        $categories = CategoryModel::all();
-        return view('admin.admin', ['categories'=> $categories]);
+        return view('manager.manager');
     }
 
 
@@ -38,7 +36,7 @@ class AdminController extends Controller
     public  function  item_category()
     {
         $categories = CategoryModel::all();
-        return view('admin.item-category', ['categories'=> $categories]);
+        return view('manager.item-category', ['categories'=> $categories]);
     }
 
     /**
@@ -113,7 +111,7 @@ class AdminController extends Controller
     public  function  supplier()
     {
         $suppliers = SupplierModel::all();
-        return view('admin.supplier', ['suppliers'=> $suppliers]);
+        return view('manager.supplier', ['suppliers'=> $suppliers]);
     }
 
     /**
@@ -206,7 +204,7 @@ class AdminController extends Controller
         $lastBatch = BatchModel::latest('id')->first();
         $lastId = $lastBatch ? $lastBatch->id + 1 : 1;
 
-        return view('admin.stocks', [
+        return view('manager.stocks', [
             'categories' => $categories,
             'suppliers' => $suppliers,
             'items' => $items,
@@ -476,7 +474,7 @@ class AdminController extends Controller
         ->where('status', 'Active')
         ->get();
 
-        return view('admin.return', [
+        return view('manager.return', [
             'categories' => $categories,
             'suppliers' => $suppliers,
             'users' => $users,
@@ -588,5 +586,4 @@ class AdminController extends Controller
 
         return response()->json($items);
     }
-    
 }

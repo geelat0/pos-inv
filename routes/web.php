@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\UserManagementController;
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +61,6 @@ Route::group([
     Route::post('/remove', [AdminController::class, 'removereturnItem']);
     Route::get('/search', [AdminController::class, 'search']);
 
-
     // user management
     Route::get('/user-management', [UserManagementController::class, 'index']);
     Route::post('/store-user', [UserManagementController::class, 'store']);
@@ -68,19 +68,45 @@ Route::group([
     Route::post('/update-user-password/{user}', [UserManagementController::class, 'changePassword']);
     Route::get('/view-user/{user}', [UserManagementController::class, 'show'])->name('viewUser');
 
-
-
-
-
-
 });
 
 //  manager
 Route::group([
-    'middleware' => ['auth', ',manager'],
+    'middleware' => ['auth', 'manager'],
     'prefix' => 'manager',
     'as' => 'manager.',
 ], function () {
+
+    Route::get('/', [ManagerController::class, 'index']); // sample
+
+    // Category Module
+    Route::get('/item-category', [ManagerController::class, 'item_category']);
+    Route::post('/store-category', [ManagerController::class, 'storeCategory']);
+    Route::post('/category-status', [ManagerController::class, 'CategoryStatus']);
+    Route::post('/update_category', [ManagerController::class, 'updateCategory']);
+
+    // Supplier Module
+    Route::get('/supplier', [ManagerController::class, 'supplier']);
+    Route::post('/store-supplier', [ManagerController::class, 'storeSupplier']);
+    Route::post('/supplier-status', [ManagerController::class, 'SupplierStatus']);
+    Route::post('/update_supplier', [ManagerController::class, 'updateSupplier']);
+
+    // Stocks Module
+    Route::get('/stocks', [ManagerController::class, 'stocks']);
+    Route::get('/getItems', [ManagerController::class, 'getItems']);
+    Route::post('/add-stocks', [ManagerController::class, 'storeStocks']);
+    Route::post('/restocks', [ManagerController::class, 'storeRestock']);
+    Route::post('/stock-status', [ManagerController::class, 'StockStatus']);
+    Route::post('/item-status', [ManagerController::class, 'ItemStatus']);
+    Route::post('/update_item', [ManagerController::class, 'updateStocks']);
+
+    // Return Item Module
+    Route::get('/return', [ManagerController::class, 'return']);
+    Route::post('/add-return', [ManagerController::class, 'AddReturn']);
+    Route::post('/add-grounds', [ManagerController::class, 'storeReturnGrounds']);
+    Route::post('/remove', [ManagerController::class, 'removereturnItem']);
+    Route::get('/search', [ManagerController::class, 'search']);
+
 
 });
 //  employee

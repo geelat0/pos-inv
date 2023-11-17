@@ -63,7 +63,7 @@
 
 
     <div class="row pb-3">
-        <div class="col-md-12 d-flex justify-content-center" style="background-color;">
+        <div class="col-md-12 d-flex justify-content-center">
             <div class="card d-flex -justify-content-center card-view-profile" style="width: 32rem;">
                 <div class="card-body">
                     <div class="row p-2">
