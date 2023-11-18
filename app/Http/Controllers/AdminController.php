@@ -127,6 +127,10 @@ class AdminController extends Controller
             'contact_no' => 'required|unique:supplier,contact_no',
        ]);
 
+       if (!preg_match('/^09\d{9}$/', $request->input('contact_no'))) {
+        return redirect()->back()->with('error', 'Invalid contact number format. It should start with 09 and have 11 digits.');
+    }
+
         SupplierModel::create($data);
 
         return redirect()->back()->with('success', 'Supplier Name added successfully');
@@ -174,6 +178,10 @@ class AdminController extends Controller
 
         if ($existingSupplier) {
             return redirect()->back()->with('error', 'Supplier Name already exists.');
+        }
+
+        if (!preg_match('/^09\d{9}$/', $request->input('contact_no'))) {
+            return redirect()->back()->with('error', 'Invalid contact number format. It should start with 09 and have 11 digits.');
         }
         
         // Update the category name if it doesn't already exist.
@@ -514,12 +522,12 @@ class AdminController extends Controller
         ]);
 
         // Check if the transaction ID exists in the transaction table
-        $transactionExists = TransactionModel::where('id', $request->input('transaction_id'))->exists();
+        // $transactionExists = TransactionModel::where('id', $request->input('transaction_id'))->exists();
 
-        if (!$transactionExists) {
-            // If the transaction ID doesn't exist, return an error message
-            return redirect()->back()->with('error', 'Transaction ID does not exist');
-        }
+        // if (!$transactionExists) {
+        //     // If the transaction ID doesn't exist, return an error message
+        //     return redirect()->back()->with('error', 'Transaction ID does not exist');
+        // }
 
         // Create a new instance of the Return model
         $return = new ReturnItemModel;
@@ -587,6 +595,12 @@ class AdminController extends Controller
                             ->get();
 
         return response()->json($items);
+    }
+
+
+    public function Getmonthly()
+    {
+        return view('admin.monthly');
     }
     
 }

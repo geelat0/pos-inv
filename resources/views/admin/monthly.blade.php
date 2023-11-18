@@ -45,90 +45,42 @@
         @include('includes.page-wrapper')
 
     <div class="container-fluid">
-        <h3 class="page-title">BITS&BYTES DASHBOARD</h3>
-
         <div class="row row-card">
-          <div class="card border-0" style="width: 100%;">
-            <div class="row">
-              <div class="col-sm-4">
-                <div class="card-body d-flex justify-content-center">
-                  <div class="row">
-                      <div class="card monthly-sale-card" style="width: 100%;">
-                        <div class="card-body">
-                          <h4 class="card-title">Total Sale</h4>
-                          <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
-                          <h1 style="color: #1d2365;"><b>P</b>155000</h1>
-                        </div>
-                      </div>
-                      <div class="card monthly-sale-card mt-3" style="width: 100%;">
-                        <div class="card-body">
-                          <h4 class="card-title">Total Profit</h4>
-                          <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
-                          <h1 style="color: #1d2365;"><b>P</b>15000</h1>
-                        </div>
-                      </div>
-                  </div>
-                </div>
+          <div class="col-md-4 d-flex justify-content-center sales-card">
+            <div class="card monthly-sale-card" style="width: 32rem;">
+              <div class="card-body">
+                <h4 class="card-title">Previous Monthly Sale</h4>
+                <h6 class="card-subtitle mb-2 text-muted">October 2023</h6>
+                <h1 style="color: #ff6c22;"><b>P</b>150000</h1>
               </div>
-              <div class="col-sm-8">
-                <div class="card-body">
-                  <div class="row" style="background-color: #2b3499; border: 1px solid #c6c7c6; border-radius: 10px; padding: 1%;">
-                    <h2 class="card-title" style="font-weight: bold; color: #ffd099;">TOP 1 ITEM!</h2>
-                    <h4 class="card-title" style=" color: #ffd099;">Item name here</h4>
-                    <p style="color: #ffd099;">Category 1</p>
-                  </div>
-                  <div class="row">
-                  <table id="" class="table" style="width:100%">
-                    <thead class="">
-                        <tr>
-                            <th>Rank#</th>
-                            <th>Item</th>
-                            <th>Category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2</td>
-                            <td>Item2</td>
-                            <td>Category1</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Item3</td>
-                            <td>Category2</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Item3</td>
-                            <td>Category2</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Item3</td>
-                            <td>Category2</td>
-                        </tr>
-                </table>
-                  </div>
-                </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 d-flex justify-content-center sales-card">
+            <div class="card monthly-sale-card" style="width: 32rem;">
+              <div class="card-body">
+                <h4 class="card-title">Total Sale</h4>
+                <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
+                <h1 style="color: #1d2365;"><b>P</b>155000</h1>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 d-flex justify-content-center sales-card">
+            <div class="card monthly-sale-card" style="width: 32rem;">
+              <div class="card-body">
+                <h4 class="card-title">Total Profit</h4>
+                <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
+                <h1 style="color: #12c300;"><b>P</b>15000</h1>
               </div>
             </div>
           </div>
         </div>
+    </div>
 
-        <div class="container-fluid">
-          <div class="col-sm">
-            <div class="alert alert-success" role="alert" style="width: 100%;">
-              All items are Full. No need to restock for now.
-            </div>
-            <div class="alert alert-danger" role="alert">
-              Certain items need replenishment!
-            </div>
-          </div>
-        </div>
-
-    <div class="graph-container">
+    <div class="row graph-container">
       <!-- CONTAINER FOR THE GRAPH  -->
-      <div class="" id="container" style="width: 100%;"></div>
+      <div class="" id="container" style="width:100%; height:50%;"></div>
     </div>
 
     <div class="container-fluid">
@@ -148,6 +100,9 @@
               </div>
               <div class="col-md-3 align-self-end">
                 <button class="btn btn-primary btn-filter-date"><i class="bi bi-printer-fill">&nbsp;</i>Download Report</button>
+              </div>
+              <div class="col-md-3 align-self-end">
+                <button class="btn btn-primary btn-filter-date"><i class="bi bi-printer-fill">&nbsp;</i>Print Report</button>
               </div>
           </div>
         </form>

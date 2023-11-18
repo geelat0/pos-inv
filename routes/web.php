@@ -68,6 +68,9 @@ Route::group([
     Route::post('/update-user-password/{user}', [UserManagementController::class, 'changePassword']);
     Route::get('/view-user/{user}', [UserManagementController::class, 'show'])->name('viewUser');
 
+
+    Route::get('monthly', [AdminController::class, 'Getmonthly']);
+
 });
 
 //  manager

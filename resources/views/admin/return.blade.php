@@ -145,8 +145,9 @@
                           <div class="mb-3">
 
                             <!-- need UI   -->
-                            <input type="text" id="item-search" name = "query" placeholder="Search items...">
-                            <ul id="item-list"></ul>
+                            <input type="text" class="form-control" id="item-search" name = "query" placeholder="Search items...">
+                            <ul class="list-group" id="item-list">
+                            </ul>
                             <input type="hidden" name="item_id" id="selected-item-id">
 
                           </div>
@@ -273,7 +274,7 @@
                     items.forEach(function (item) {
                         // Only display items whose names start with the inputted term
                         if (item.name.toLowerCase().startsWith($('#item-search').val().toLowerCase())) {
-                            var listItem = $('<li>')
+                            var listItem = $('<li class="list-group-item" style="color: #000;">')
                                 .text(item.name)
                                 .click(function () {
                                     $('#item-search').val(item.name);
