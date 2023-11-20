@@ -16,11 +16,12 @@ return new class extends Migration
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->dateTime('timestamp');
             $table->decimal('total_amount');
             $table->decimal('total_profit');
             $table->decimal('discount');
             $table->decimal('total_amount_with_discount');
+
+            $table->timestamps();
         });
     }
 

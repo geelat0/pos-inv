@@ -8,6 +8,7 @@ use App\Models\BatchModel;
 use Illuminate\Http\Request;
 use App\Models\CategoryModel;
 use App\Models\SupplierModel;
+use Illuminate\Support\Carbon;
 use App\Models\BatchOrderModel;
 use App\Models\ReturnItemModel;
 use App\Models\TransactionModel;
@@ -585,5 +586,43 @@ class ManagerController extends Controller
                             ->get();
 
         return response()->json($items);
+    }
+
+        /*
+    |--------------------------------------------------------------------------
+    | MONTHLY SALES FUNCTIONS
+    |--------------------------------------------------------------------------
+    */
+
+    public function monthly(Request $request)
+    {
+        //Show all data from transaction table
+        $data = TransactionModel::select(
+                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
+                              DB::raw("SUM(total_amount) as total_amount"),
+                              DB::raw("SUM(total_profit) as total_profit")
+        )
+        ->groupBy('formatted_date')
+        ->get();
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            // Filter data based on the date range
+            $fromDate = $request->input('start_date');
+            $toDate = $request->input('end_date');
+            $toDate = Carbon::parse($toDate)->endOfDay();
+
+            $data = TransactionModel::select(
+                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
+                              DB::raw("SUM(total_amount) as total_amount"),
+                              DB::raw("SUM(total_profit) as total_profit")
+            )
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate)
+            ->groupBy('formatted_date')
+            ->get();
+        }
+
+
+        return view('manager.monthly', compact('data'));
     }
 }

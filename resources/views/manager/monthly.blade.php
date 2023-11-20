@@ -87,7 +87,7 @@
       <div class="row p-3">
 
         <!-- FILTER DATE -->
-        <form id="filterForm"  action="/admin/monthly"  method="get">
+        <form id="filterForm"  action="/manager/monthly"  method="get">
         @csrf
           <div class="row" style="margin-bottom: 10px;">
               <h4>Monthly Sales Table</h4>

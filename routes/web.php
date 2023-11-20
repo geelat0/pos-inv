@@ -68,8 +68,7 @@ Route::group([
     Route::post('/update-user-password/{user}', [UserManagementController::class, 'changePassword']);
     Route::get('/view-user/{user}', [UserManagementController::class, 'show'])->name('viewUser');
 
-
-    Route::get('monthly', [AdminController::class, 'Getmonthly']);
+    Route::get('/monthly', [AdminController::class, 'monthly']);
 
 });
 
@@ -109,6 +108,8 @@ Route::group([
     Route::post('/add-grounds', [ManagerController::class, 'storeReturnGrounds']);
     Route::post('/remove', [ManagerController::class, 'removereturnItem']);
     Route::get('/search', [ManagerController::class, 'search']);
+
+    Route::get('/monthly', [ManagerController::class, 'monthly']);
 
 
 });
