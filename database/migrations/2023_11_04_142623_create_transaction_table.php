@@ -19,6 +19,8 @@ return new class extends Migration
             $table->decimal('total_amount');
             $table->decimal('total_profit');
             $table->decimal('discount');
+            $table->decimal('amount_received');
+            $table->decimal('change');
             $table->decimal('total_amount_with_discount');
 
             $table->timestamps();

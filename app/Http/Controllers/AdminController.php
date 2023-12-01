@@ -36,7 +36,7 @@ class AdminController extends Controller
 
 
     /**
-     * Show Category 
+     * Show Category
      */
     public  function  item_category()
     {
@@ -87,12 +87,12 @@ class AdminController extends Controller
     {
         $category_id = $request->input('id');
         $new_category_name = $request->input('category_name');
-    
+
         // Check if the category name already exists, excluding the current category.
         $existingCategory = CategoryModel::where('category_name', $new_category_name)
             ->where('id', '!=', $category_id)
             ->first();
-    
+
         if ($existingCategory) {
             return redirect()->back()->with('error', 'Category already exists.');
         }
@@ -186,7 +186,7 @@ class AdminController extends Controller
         if (!preg_match('/^09\d{9}$/', $request->input('contact_no'))) {
             return redirect()->back()->with('error', 'Invalid contact number format. It should start with 09 and have 11 digits.');
         }
-        
+
         // Update the category name if it doesn't already exist.
         $supplier = SupplierModel::find($request->input('id'));
         $supplier->supplier_name = $request->input('supplier_name');
@@ -241,9 +241,9 @@ class AdminController extends Controller
 
         return response()->json($items);
     }
-    
+
     /**
-     * Create New Items 
+     * Create New Items
      */
     public function storeStocks(Request $request)
     {
@@ -315,14 +315,14 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Items inserted successfully.');
     }
- 
+
 
     /**
      * Restock Item
      */
     public function storeRestock(Request $request)
-    { 
-        
+    {
+
         // Validation
         $validatedData = $request->validate([
             'category_id' => 'required',
@@ -349,7 +349,7 @@ class AdminController extends Controller
         // Start a database transaction
         DB::beginTransaction();
 
-        try {    
+        try {
             // Insert into the batch_order table
             $batchOrder = BatchOrderModel::create([
                 'batch_id' => null,
@@ -371,7 +371,7 @@ class AdminController extends Controller
             $batch = BatchModel::create([
                 'user_id' => $user,
             ]);
-            
+
             // Update batch_id in batch_order table
             $batchOrder->update(['batch_id' => $batch->id]);
 
@@ -438,20 +438,20 @@ class AdminController extends Controller
             // If the item name already exists for a different item, return an error
             return redirect()->back()->with('error', 'Item name already exists for another item');
         }
-        
+
         // Update the Item table
         $item = ItemModel::find($itemId);
         $item->name = $request->input('name');
         $item->supplier_price = $request->input('supplier_price');
         $item->selling_price = $request->input('selling_price');
-        $item->category_id = $request->input('category_id'); 
-        $item->supplier_id = $request->input('supplier_id'); 
-        $item->replenish = $request->input('replenish'); 
+        $item->category_id = $request->input('category_id');
+        $item->supplier_id = $request->input('supplier_id');
+        $item->replenish = $request->input('replenish');
         $item->save();
 
         // Update the Batch Order table if needed
         $batch = BatchOrderModel::where('item_id', $itemId)->first();
-       
+
         if ($batch) {
             $batch->update([
                 'category_id' => $request->input('category_id'),

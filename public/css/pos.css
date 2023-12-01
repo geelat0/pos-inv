@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins&display=swap');
+
+body{
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f6f8fc !important;
+}
+
+/* .table{
+  margin-top: 4% !important;
+  border-radius: 10px;
+  font-size: 12px;
+} */
+
+.page-title{
+    margin: 2%;
+    font-weight: bold;
+    letter-spacing: 10px;
+    font-size: 24px !important;
+    color: #3b3b3b;
+}
+
+.btn-add-user{
+    background-color: #2b3499 !important;
+    width: 15%;
+    color: #fff!important;
+    font-size: 12px;
+    transition: 0.3s;
+    font-weight: bold;
+}
+.btn-add-user:hover{
+    background-color: #ff6c22 !important;
+    color: #fff!important;
+    letter-spacing: 3px;
+}
+
+.btn-primary{
+    background-color: #2b3499 !important;
+    border: none !important;
+    transition: 0.3s !important;
+}
+
+.btn-primary:hover{
+    background-color: #ff6c22 !important;
+    letter-spacing: 5px;
+}
+
+.btn-print-reciept{
+    width: 30%;
+}
+
+.btn-square-md{
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 120px !important;
+    text-align: center;
+    padding: 0px;
+    font-size:12px;
+}
+
+.col-sm-6 h5{
+    color: #2b3499;
+}
+
+.card-table-pos{
+    /* margin-top: 10px; */
+}
+
+.card-reciept{
+    width: 50%;
+}
+
+.reciept-body{
+    background-color: #fff !important;
+    overflow-x: hidden !important;
+}
+
+.table thead tr th{
+    font-size: 12px !important;
+}
+
+.table tbody tr td{
+    font-size: 12px !important;
+}
+
+.dropdown-menu{
+    width: 3%;
+}
+
+.dropdown-item{
+    font-size: 11px;
+}
+
+#orderSlip {
+    border: 1px solid #ccc;
+    width: 650px;
+    margin: 20px auto;
+}
+
+/* tablet-responsive */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .btn-square-md{
+        margin: 20px;
+    }
+
+    .reciept-body{
+        background-color: #fff !important;
+        overflow-x: hidden !important;
+    }
+}
+
+/* phone responsive */
+@media (max-width: 767px) {
+    .container-fluid{
+        padding: 0 !important;
+    }
+    .btn-square-md{
+        margin: 5px;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        height: 80px !important;
+        text-align: center;
+        /* padding: 0px; */
+        font-size:12px;
+    }
+
+    /* .a-void{
+      padding-top: 9% !important;
+    } */
+
+    .btn-print-reciept{
+        width: 100%;
+    }
+
+    .card-reciept{
+        width: 100%;
+    }
+
+    .table-th{
+        font-size: 12px;
+    }
+
+    .table-td{
+        font-size: 12px;
+    }
+
+    #orderSlip {
+        border: 1px solid #ccc;
+        max-width: 400px;
+        margin: 20px auto;
+    }
+
+    .reciept-body{
+        background-color: #fff !important;
+        overflow-x: hidden !important;
+    }
+}

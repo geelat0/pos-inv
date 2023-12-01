@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins&display=swap');
+
+body{
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Poppins', sans-serif;
+}
+
+.navbar{
+    background-color: #1d2365 !important;
+}
+
+.navbar-brand{
+    color: #fff !important;
+    font-size: 14px !important;
+}
+
+.nav-logo{
+    width: 2%;
+}
+
+.employee-profile{
+    color: #fff;
+}
+
+.employee-profile:hover{
+    color: #fff;
+    text-decoration: none;
+}
+
+.employee-profile{
+    color: #fff !important;
+    font-size: 12px;
+    margin: 5px;
+    transition: 0.3s;
+    letter-spacing: 0px;
+}
+
+.employee-profile:hover{
+    color: #ffd099 !important;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.nav-link{
+    color: #fff !important;
+    font-size: 12px;
+    margin: 5px;
+    transition: 0.3s;
+    /* letter-spacing: 1px; */
+}
+
+.nav-link:hover{
+    color: #ffd099 !important;
+    font-weight: bold;
+    /* letter-spacing: 5px; */
+}
+
+#navbar a.active {
+    /* background-color: #ffd099;
+    border-radius: 10px; */
+    color: #ffd099 !important;
+    border-bottom: 1px solid #ffd099;
+    font-weight: bold;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .nav-logo{
+        width: 7%;
+    }
+}
+
+
+@media (max-width: 767px) {
+    .nav-logo{
+        width: 10%;
+    }
+
+}

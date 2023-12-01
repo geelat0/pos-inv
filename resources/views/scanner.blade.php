@@ -1,132 +1,126 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
+    <title></title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js" integrity="sha512-bCsBoYoW6zE0aja5xcIyoCDPfT27+cGr7AOCqelttLVRGay6EKGQbR6wm6SUcUGOMGXJpj+jrIpMS6i80+kZPw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <title>Hello, world!</title>
+    <style>
+        /* In order to place the tracking correctly */
+        canvas.drawing, canvas.drawingBuffer {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    </style>
 </head>
+
 <body>
-<h1>Hello, world!</h1>
-
-<!-- Optional JavaScript; choose one of the two! -->
-
-<div id="reader"></div>
 
 
-<script src="{{ asset('js/html5-qrcode.min.js') }}"></script>
+<!-- Div to show the scanner -->
 
-<!-- Option 1: Bootstrap Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
+<!-- Include the image-diff library -->
 
 <script>
+    var _scannerIsRunning = false;
 
-
-
-        var flag = true;
-
-        function onScanSuccess(qrCodeMessage) {
-
-            {{--var  type = $('#type').val();--}}
-            {{--var  ins_ref_id =<?php echo json_encode($_SESSION['userId']); ?>;--}}
-            {{--var  bs_id =<?php echo json_encode($_GET['bsid']); ?>;--}}
-            {{--var  block_ref_id =<?php echo json_encode($_GET['blockid']); ?>;--}}
-            {{--var  std_ref_id =   qrCodeMessage.trim();--}}
-
-            console.log( qrCodeMessage);
-
-            if(flag){
-
-                // $.ajax({
-                //     type: 'POST',
-                //     url: 'query/scanExe.php',
-                //     dataType: 'JSON',
-                //     data: {
-                //         'type': type,
-                //         'ins_ref_id':ins_ref_id,
-                //         'bs_id' : bs_id,
-                //         'std_ref_id': std_ref_id,
-                //         'block_ref_id':block_ref_id
-                //     },
-                //     beforeSend: function() {
-                //
-                //
-                //     },
-                //     error: function() { // if error occured
-                //         // alert("Error occured.please try again");
-                //     },
-                //     success: function (data) {
-                //
-                //         $('.alert').hide();
-                //
-                //         console.log(data);
-                //
-                //         if(data.res=='invalidClass'){
-                //
-                //             $('#invalidClass').show();
-                //
-                //         }
-                //         else if(data.res=='notexist'){
-                //
-                //             $('#userNotFound').show();
-                //
-                //         }
-                //         else if(data.res =='error'){
-                //
-                //             alert('Contact The developer ,')
-                //
-                //         }
-                //         else if(data.res =='failed'){
-                //             $('#failed').show();
-                //         }
-                //
-                //         else if(data.res == 'success'){
-                //
-                //             $('#success').show();
-                //
-                //         }
-                //
-                //
-                //
-                //
-                //     }
+    function startScanner() {
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#scanner-container'),
+                constraints: {
+                    width: 400,
+                    height: 300,
+                    facingMode: "environment"
+                },
+            },
+            decoder: {
+                readers: [
+                    "code_128_reader",
+                    "ean_reader",
+                    "ean_8_reader",
+                    "code_39_reader",
+                    "code_39_vin_reader",
+                    "codabar_reader",
+                    "upc_reader",
+                    "upc_e_reader",
+                    "i2of5_reader"
+                ],
+                debug: {
+                    showCanvas: true,
+                    showPatches: true,
+                    showFoundPatches: true,
+                    showSkeleton: true,
+                    showLabels: true,
+                    showPatchLabels: true,
+                    showRemainingPatchLabels: true,
+                    boxFromPatches: {
+                        showTransformed: true,
+                        showTransformedBox: true,
+                        showBB: true
+                    }
                 }
-                //
-                flag = false;
-                setTimeout(()=>flag=true, 1000);
+            },
+
+        }, function (err) {
+            if (err) {
+                console.log(err);
+                return
             }
 
+            console.log("Initialization finished. Ready to start");
+            Quagga.start();
+
+            // Set flag to is running
+            _scannerIsRunning = true;
+        });
+
+        Quagga.onProcessed(function (result) {
+            var drawingCtx = Quagga.canvas.ctx.overlay,
+                drawingCanvas = Quagga.canvas.dom.overlay;
+
+            if (result) {
+                if (result.boxes) {
+                    drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+                    result.boxes.filter(function (box) {
+                        return box !== result.box;
+                    }).forEach(function (box) {
+                        Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, { color: "green", lineWidth: 2 });
+                    });
+                }
+
+                if (result.box) {
+                    Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, { color: "#00F", lineWidth: 2 });
+                }
+
+                if (result.codeResult && result.codeResult.code) {
+                    Quagga.ImageDebug.drawPath(result.line, { x: 'x', y: 'y' }, drawingCtx, { color: 'red', lineWidth: 3 });
+                }
+            }
+        });
 
 
-        // }
+        Quagga.onDetected(function (result) {
+            console.log("Barcode detected and processed : [" + result.codeResult.code + "]", result);
+        });
+    }
 
-        function onScanFailure(error) {
-            // console.log(error);
-            // handle scan failure, usually better to ignore and keep scanning.
-            // for example:
-            // console.warn(`Code scan error = ${error}`);
+
+    // Start/stop scanner
+    document.getElementById("btn").addEventListener("click", function () {
+        if (_scannerIsRunning) {
+            Quagga.stop();
+        } else {
+            startScanner();
         }
-
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader",
-            { fps: 10, qrbox: {width: 250, height: 250} },
-            /* verbose= */ false);
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-
-
-
-
+    }, false);
 </script>
-
-<!-- Option 2: Separate Popper and Bootstrap JS -->
-<!--
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
--->
 </body>
+
 </html>

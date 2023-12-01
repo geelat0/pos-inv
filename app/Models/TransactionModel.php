@@ -25,5 +25,18 @@ class TransactionModel extends Model
         'total_amount_with_discount',
         'updated_at',
         'created_at',
+        'discount',
+        'amount_received',
+        'change'
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(OrderModel::class ,'transaction_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class ,'id','user_id');
+    }
 }

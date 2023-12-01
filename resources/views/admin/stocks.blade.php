@@ -41,12 +41,12 @@
                     @if(session('success'))
                         <div class="alert alert-success">
                             <p>{{ session('success') }}</p>
-                        </div> 
+                        </div>
                     @endif
                     @if(session('error'))
                         <div class="alert alert-danger">
                             <p>{{ session('error') }}</p>
-                        </div> 
+                        </div>
                     @endif
 
                      <!-- ADD ITEM -->
@@ -83,7 +83,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row add-new-item-form">
                                     <div class="col-sm-6 nopadding add-new-item-field">
                                         <div class="form-group">
@@ -91,7 +91,7 @@
                                         <input type="text" class="form-control" id="name" name="name[]" value="" placeholder="Enter name">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-sm-6 nopadding add-new-item-field">
                                         <div class="form-group">
                                         <label for="">Order batch #</label>
@@ -99,7 +99,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row border-bottom add-new-item-form">
                                     <div class="col-sm-3 nopadding add-new-item-field">
                                         <div class="form-group">
@@ -132,7 +132,7 @@
 
                                 <div id="add_category">
                                 </div>
-                                
+
                                 <div class="input-group-btn">
                                     <div class="mt-3">
                                         <div class="col-sm d-flex justify-content-center mb-3">
@@ -146,7 +146,7 @@
 
                                 <div class="clear"></div>
                             </form>
-                            
+
                         </div>
                     </div>
 
@@ -196,19 +196,24 @@
                                         @endif
                                     </td>
                                     <td>
+
                                         <button type="button" class="btn btn-upd-user" data-bs-toggle="modal" data-bs-target="#update-item{{ $item->id }}"><i class="bi bi-arrow-repeat"></i></button>
                                         @if ($item->status === 'Active')
                                         <button type="button" class="btn btn-upd-user" data-bs-toggle="modal" data-bs-target="#enable-stock-modal{{ $item->id }}"><i class="bi bi-check-circle-fill"></i></button>
                                         @else
                                         <button type="button" class="btn btn-upd-user" data-bs-toggle="modal" data-bs-target="#enable-stock-modal{{ $item->id }}"><i class="bi bi-x-circle-fill"></i></button>
                                         @endif
+
+                                    </td>
+                                    <td>
+                                        <a  class="btn btn-success btn-sm" href="{{ url('/generate',$item->id) }}" >Download</a>
                                     </td>
                                 </tr>
                             @endforeach
                         </table>
                     </div>
                 </div>
-        
+
         <!-- RESTOCK ITEM -->
 
         <div class="modal" id="restock">
@@ -330,7 +335,7 @@
                     </form>
                     </div>
                 </div>
-            </div>  
+            </div>
         @endforeach
         <!-- ENABLE STOCK -->
         @foreach($items as $item)
@@ -366,13 +371,13 @@
         <script>
             var room = 1;
             function add_category() {
-            
+
                 room++;
                 var objTo = document.getElementById('add_category')
                 var divtest = document.createElement("div");
                 divtest.setAttribute("class", "form-group removeclass"+room);
                 var rdiv = 'removeclass'+room;
-                divtest.innerHTML = ' <h4 class="mt-3" style="font-weight: bold; font-size: 24px; color: #ff6c22;">Adding New Item</h4> <div class="row mt-3 add-new-item-form"> <div class="col-sm-6 nopadding add-new-item-form-select"> <div class="form-group"> <div class="input-group"> <select class="form-control" id="category_id" name="category_id[]"> <option value="">Select Category</option> @foreach ($categories as $item ) <option value="{{ $item->id }}">{{ $item->category_name }}</option> @endforeach </select> </div> </div> </div> <div class="col-sm-6 nopadding add-new-item-form-select"> <div class="form-group"> <div class="input-group"> <select class="form-control" id="supplier_id" name="supplier_id[]"> <option value="">Select Supplier</option> @foreach ($suppliers as $item ) <option value="{{ $item->id }}">{{ $item->supplier_name }}</option> @endforeach </select> </div> </div> </div> </div> <div class="row add-new-item-form"> <div class="col-sm-6 nopadding add-new-item-field"> <div class="form-group"> <label for="">Item Name</label> <input type="text" class="form-control" id="name" name="name[]" value="" placeholder="Enter item name"> </div> </div> <div class="col-sm-6 nopadding add-new-item-field"> <div class="form-group"> <label for="">Order batch #</label> <input type="text" class="form-control" id="batch" name="batch[]" value="{{ $lastId }}" readonly> </div> </div> </div> <div class="row add-new-item-form"> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Buying Price</label> <input type="text" class="form-control" id="supplier_price" name="supplier_price[]" value="" placeholder="Enter Buying Price"> </div> </div> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Selling Price</label> <input type="text" class="form-control" id="selling_price" name="selling_price[]" value="" placeholder="Enter Selling Price"> </div> </div> <div class="col-sm-3 nopadding add-new-item-field mb-3"> <div class="form-group"> <label for="">Replenishment Threshold</label> <input type="number" class="form-control" id="replenish" name="replenish[]" value="" placeholder=""> </div> </div> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Item Quantity</label> <input type="number" class="form-control" id="no_of stocks" name="no_of stocks[]" value="" placeholder=""> </div> </div> </div> <div class="mt-4 mb-2 d-flex justify-content-center"> <button class="btn btn-sm btn-danger" type="button" onclick="remove_add_category('+ room +');" style="width:100%;"> <span class="glyphicon glyphicon-minus" aria-hidden="true">&nbsp;</span>Remove Form </button> </div> <div class="clear"></div>'; 
+                divtest.innerHTML = ' <h4 class="mt-3" style="font-weight: bold; font-size: 24px; color: #ff6c22;">Adding New Item</h4> <div class="row mt-3 add-new-item-form"> <div class="col-sm-6 nopadding add-new-item-form-select"> <div class="form-group"> <div class="input-group"> <select class="form-control" id="category_id" name="category_id[]"> <option value="">Select Category</option> @foreach ($categories as $item ) <option value="{{ $item->id }}">{{ $item->category_name }}</option> @endforeach </select> </div> </div> </div> <div class="col-sm-6 nopadding add-new-item-form-select"> <div class="form-group"> <div class="input-group"> <select class="form-control" id="supplier_id" name="supplier_id[]"> <option value="">Select Supplier</option> @foreach ($suppliers as $item ) <option value="{{ $item->id }}">{{ $item->supplier_name }}</option> @endforeach </select> </div> </div> </div> </div> <div class="row add-new-item-form"> <div class="col-sm-6 nopadding add-new-item-field"> <div class="form-group"> <label for="">Item Name</label> <input type="text" class="form-control" id="name" name="name[]" value="" placeholder="Enter item name"> </div> </div> <div class="col-sm-6 nopadding add-new-item-field"> <div class="form-group"> <label for="">Order batch #</label> <input type="text" class="form-control" id="batch" name="batch[]" value="{{ $lastId }}" readonly> </div> </div> </div> <div class="row add-new-item-form"> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Buying Price</label> <input type="text" class="form-control" id="supplier_price" name="supplier_price[]" value="" placeholder="Enter Buying Price"> </div> </div> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Selling Price</label> <input type="text" class="form-control" id="selling_price" name="selling_price[]" value="" placeholder="Enter Selling Price"> </div> </div> <div class="col-sm-3 nopadding add-new-item-field mb-3"> <div class="form-group"> <label for="">Replenishment Threshold</label> <input type="number" class="form-control" id="replenish" name="replenish[]" value="" placeholder=""> </div> </div> <div class="col-sm-3 nopadding add-new-item-field"> <div class="form-group"> <label for="">Item Quantity</label> <input type="number" class="form-control" id="no_of stocks" name="no_of stocks[]" value="" placeholder=""> </div> </div> </div> <div class="mt-4 mb-2 d-flex justify-content-center"> <button class="btn btn-sm btn-danger" type="button" onclick="remove_add_category('+ room +');" style="width:100%;"> <span class="glyphicon glyphicon-minus" aria-hidden="true">&nbsp;</span>Remove Form </button> </div> <div class="clear"></div>';
                 objTo.appendChild(divtest)            }
             function remove_add_category(rid) {
                 $('.removeclass'+rid).remove();

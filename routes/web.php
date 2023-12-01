@@ -23,6 +23,13 @@ Route::get('/home', [Auth\AuthController::class, 'home']);
 Route::get('/logout', [Auth\AuthController::class, 'logout']);
 
 
+Route::get('/generate/{id}', [\App\Http\Controllers\BarcodeController::class, 'index']);
+
+
+
+
+
+
 
 ///  admin
 Route::group([
@@ -115,12 +122,33 @@ Route::group([
 });
 //  employee
 Route::group([
-    'middleware' => ['auth', ',employee'],
+//    'middleware' => ['auth', ',employee'],
     'prefix' => 'employee',
     'as' => 'employee.',
 ], function () {
 
+    Route::get('/', [\App\Http\Controllers\EmployeeController::class, 'index']);
+    Route::get('/receipt/{id}', [\App\Http\Controllers\EmployeeController::class, 'receipt']);
+    Route::get('/void', [\App\Http\Controllers\EmployeeController::class, 'void']);
+    Route::get('/report', [\App\Http\Controllers\EmployeeController::class, 'report']);
+
+    Route::get('/items', [\App\Http\Controllers\EmployeeController::class, 'searchProductByNameOrID']);
+    Route::post('/add-cart', [\App\Http\Controllers\EmployeeController::class, 'addCart']);
+    Route::post('/change-quantity', [\App\Http\Controllers\EmployeeController::class, 'changeQuantity']);
+    Route::get('/add-item', [\App\Http\Controllers\EmployeeController::class, 'addItem']);
+
+    Route::post('/void-login', [\App\Http\Controllers\EmployeeController::class, 'verifyCredentials']);
+    Route::post('/void-item', [\App\Http\Controllers\EmployeeController::class, 'voidItem']);
+    Route::get('/void-done', [\App\Http\Controllers\EmployeeController::class, 'voidDone']);
+    Route::post('/pay-now', [\App\Http\Controllers\EmployeeController::class, 'payNow']);
+
+
 });
+
+
+Route::get('/scanner', [\App\Http\Controllers\EmployeeController::class, 'index']);
+
+
 
 
 

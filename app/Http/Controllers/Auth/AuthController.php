@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+
 use App\Http\Controllers\Controller;
 use App\Models\LoginModel;
 use Illuminate\Http\Request;
