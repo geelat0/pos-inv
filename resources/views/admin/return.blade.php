@@ -143,13 +143,10 @@
                               </select>
                           </div>
                           <div class="mb-3">
-
-                            <!-- need UI   -->
                             <input type="text" class="form-control" id="item-search" name = "query" placeholder="Search items...">
-                            <ul class="list-group" id="item-list">
-                            </ul>
+                                <ul class="list-group" id="item-list">
+                                </ul>
                             <input type="hidden" name="item_id" id="selected-item-id">
-
                           </div>
                           <div class="mb-3">
                               <select class="selectpicker form-control" name="user_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
