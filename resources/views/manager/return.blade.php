@@ -269,7 +269,7 @@
                     items.forEach(function (item) {
                         // Only display items whose names start with the inputted term
                         if (item.name.toLowerCase().startsWith($('#item-search').val().toLowerCase())) {
-                            var listItem = $('<li>')
+                            var listItem = $('<li class="list-group-item" style="color: #000;">')
                                 .text(item.name)
                                 .click(function () {
                                     $('#item-search').val(item.name);
