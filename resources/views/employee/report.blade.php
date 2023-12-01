@@ -117,7 +117,7 @@
 <script>
     function printTable() {
         var printWindow = window.open('', '_blank');
-        printWindow.document.write('<html><head><title>Monthly Sales</title></head><body>');
+        printWindow.document.write('<html><head><title>Daily Report</title></head><body>');
         printWindow.document.write('<style>@media print{table{border-collapse: collapse;width: 100%;}table, th, td{border: 1px solid black;}th, td{padding: 8px;text-align: left;}}</style>');
         printWindow.document.write(document.querySelector('table').outerHTML);
         printWindow.document.write('</body></html>');

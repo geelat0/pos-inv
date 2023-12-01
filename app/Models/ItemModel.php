@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ItemModel extends Model
 {
@@ -39,13 +41,19 @@ class ItemModel extends Model
         return $this->belongsTo(SupplierModel::class);
     }
 
-    public function batchOrder()
+    public function getActiveItem()
     {
-        return $this->belongsTo(BatchOrderModel::class);
+        DB::statement("SET SQL_MODE=''");
+        return $this::where('status', 'Active')->groupby('name')->get();
     }
-
-    public function user()
+    public function queryItem(Request $request)
     {
-        return $this->belongsTo(User::class);
+        $query = $request->get('query');
+        DB::statement("SET SQL_MODE=''");
+        return $this::where('name', 'like', "%$query%")
+                            ->where('status', 'Active')
+                            ->groupby('name')
+                            ->get();
     }
+    
 }

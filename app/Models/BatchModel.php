@@ -21,5 +21,9 @@ class BatchModel extends Model
         'created_at',
     ];
 
+    public function getLastbatch(){
+        return $this::latest('id')->first();
+    }
+
     
 }

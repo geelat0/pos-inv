@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SupplierModel extends Model
 {
@@ -25,8 +26,24 @@ class SupplierModel extends Model
         'created_at',
     ];
 
-    public function items()
-    {
-        return $this->hasMany(ItemModel::class);
+    public function SupplierExist(Request $request){
+
+        // Validate request data
+        $request->validate([
+        'supplier_name' => 'required|string',
+        'email' => 'required|email',
+        'contact_no' => 'required|string',
+        ]);
+ 
+        $data = $this::where('supplier_name', $request->input('supplier_name'))
+        ->where('email', $request->input('email'))
+        ->where('contact_no', $request->input('contact_no'))
+        ->first();
+
+        return $data;
+    }
+
+    public function getActiveSupplier(){
+        return $this::where('status', 'Active')->get();
     }
 }

@@ -28,24 +28,4 @@ class BatchOrderModel extends Model
         'created_at',
     ];
 
-    public function batch()
-    {
-        return $this->belongsTo(BatchModel::class);
-    }
-
-    public function item()
-    {
-        return $this->belongsTo(ItemModel::class);
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(CategoryModel::class);
-    }
-
-    public function supplier()
-    {
-        return $this->belongsTo(SupplierModel::class);
-    }
-
 }

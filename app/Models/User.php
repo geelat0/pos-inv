@@ -54,7 +54,12 @@ class User extends Authenticatable
     }
 
     public function isManager()
-{
-    return $this->user_role === '2'; 
-}
+    {
+        return $this->user_role === '2'; 
+    }
+
+    public function getAllEmployee()
+    {
+        return $this::where('user_role', '3')->get();
+    }
 }

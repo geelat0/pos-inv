@@ -144,7 +144,6 @@
                           </div>
                           <div class="mb-3">
 
-                            <!-- need UI   -->
                             <input type="text" id="item-search" name = "query" placeholder="Search items...">
                             <ul id="item-list"></ul>
                             <input type="hidden" name="item_id" id="selected-item-id">
@@ -255,7 +254,7 @@
                     var searchTerm = $(this).val();
 
                     $.ajax({
-                        url: '/admin/search',
+                        url: '/manager/search',
                         type: 'GET',
                         data: {term: searchTerm},
                         success: function (response) {

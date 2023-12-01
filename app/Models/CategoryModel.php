@@ -21,10 +21,10 @@ class CategoryModel extends Model
         'status',
         'created_at',
     ];
-
-    public function items()
+    
+    public function getActiveCat()
     {
-        return $this->hasMany(ItemModel::class);
+        return $this::where('status', 'Active')->get();
     }
 
     

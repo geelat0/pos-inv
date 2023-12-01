@@ -18,80 +18,41 @@ use Illuminate\Support\Facades\Auth;
 
 class ManagerController extends Controller
 {
-<<<<<<< HEAD
-    public  function  index()
-
-
-    {
-
-
-        return view('manager.manager');
-=======
     public  function  index(Request $request)
     {
-        DB::statement("SET SQL_MODE=''");
-        //Show all data from transaction table
-        $data = TransactionModel::select(
-                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
-                              DB::raw("SUM(total_amount) as total_amount"),
-                              DB::raw("SUM(total_profit) as total_profit")
-        )
-        ->groupBy('formatted_date')
-        ->get();
+        $data = (new TransactionModel)->getAllTransaction();
 
         if ($request->has('start_date') && $request->has('end_date')) {
             // Filter data based on the date range
-            $fromDate = $request->input('start_date');
-            $toDate = $request->input('end_date');
-            $toDate = Carbon::parse($toDate)->endOfDay();
-            DB::statement("SET SQL_MODE=''");
-            $data = TransactionModel::select(
-                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
-                              DB::raw("SUM(total_amount) as total_amount"),
-                              DB::raw("SUM(total_profit) as total_profit")
-            )
-            ->whereDate('created_at', '>=', $fromDate)
-            ->whereDate('created_at', '<=', $toDate)
-            ->groupBy('formatted_date')
-            ->get();
+            $data = (new TransactionModel)->FilterTransaction($request);
         }
 
-            DB::statement("SET SQL_MODE=''");
-            $currentYear = date('Y');
-            $monthlySales = TransactionModel::select(
-                            DB::raw("MONTH(created_at) as month"),
-                            DB::raw("SUM(total_amount_with_discount) as total_amount")
-            )
-                ->whereYear('created_at', $currentYear)
-                ->groupBy('month')
-                ->get();
-
-                $chartData = [];
-                // Initialize an array to store months with no data
-                $monthsWithNoData = [];
-                
-                // Loop through all 12 months
-                for ($month = 1; $month <= 12; $month++) {
-                    // Check if there is data for the current month
-                    $monthlySale = $monthlySales->firstWhere('month', $month);
-                
-                    if ($monthlySale) {
-                        // If data exists, add it to the chart data
-                        $chartData[] = [
-                            'name' => date('F', mktime(0, 0, 0, $monthlySale->month, 1)),
-                            'sales' => (double)$monthlySale->total_amount,
-                        ];
-                    } else {
-                        // If no data exists, add a placeholder value
-                        $monthsWithNoData[] = date('F', mktime(0, 0, 0, $month, 1));
-                        $chartData[] = [
-                            'name' => date('F', mktime(0, 0, 0, $month, 1)),
-                            'sales' => 0,
-                        ];
-                    }
+        //Bar Graph Backend
+           $monthlySales = (new TransactionModel)->GetMonthlySales();
+        // Initialize an array to store months with data
+            $chartData = [];
+        // Initialize an array to store months with no data
+            $monthsWithNoData = [];
+        // Loop through all 12 months
+            for ($month = 1; $month <= 12; $month++) {
+                // Check if there is data for the current month
+                $monthlySale = $monthlySales->firstWhere('month', $month);
+                if ($monthlySale) {
+                    // If data exists, add it to the chart data
+                    $chartData[] = [
+                        'name' => date('F', mktime(0, 0, 0, $monthlySale->month, 1)),
+                        'sales' => (double)$monthlySale->total_amount,
+                    ];
+                } else {
+                    // If no data exists, add a placeholder value
+                    $monthsWithNoData[] = date('F', mktime(0, 0, 0, $month, 1));
+                    $chartData[] = [
+                        'name' => date('F', mktime(0, 0, 0, $month, 1)),
+                        'sales' => 0,
+                    ];
                 }
+            }
         return view('manager.manager', ['data' => $data, 'monthlySales' => $monthlySales, 'chartData' => $chartData]);
->>>>>>> bbbec2cb0e8e206bfe23581c292186fba719fad9
     }
 
 
@@ -103,7 +64,7 @@ class ManagerController extends Controller
 
 
     /**
-     * Show Category
+     * Show Category 
      */
     public  function  item_category()
     {
@@ -154,16 +115,16 @@ class ManagerController extends Controller
     {
         $category_id = $request->input('id');
         $new_category_name = $request->input('category_name');
-
+    
         // Check if the category name already exists, excluding the current category.
         $existingCategory = CategoryModel::where('category_name', $new_category_name)
             ->where('id', '!=', $category_id)
             ->first();
-
+    
         if ($existingCategory) {
             return redirect()->back()->with('error', 'Category already exists.');
         }
-            // Update the category name if it doesn't already exist.
+            // Update the category name if it doesn't exist.
         $category = CategoryModel::find($category_id);
         $category->category_name = $new_category_name;
         $category->save();
@@ -197,6 +158,10 @@ class ManagerController extends Controller
             'contact_no' => 'required|unique:supplier,contact_no',
        ]);
 
+       if (!preg_match('/^09\d{9}$/', $request->input('contact_no'))) {
+        return redirect()->back()->with('error', 'Invalid contact number format. It should start with 09 and have 11 digits.');
+    }
+
         SupplierModel::create($data);
 
         return redirect()->back()->with('success', 'Supplier Name added successfully');
@@ -229,23 +194,17 @@ class ManagerController extends Controller
      */
     public function updateSupplier(Request $request)
     {
-        // Validate request data
-        $request->validate([
-            'supplier_name' => 'required|string',
-            'email' => 'required|email',
-            'contact_no' => 'required|string',
-        ]);
-
         // Check if the category with the provided details already exists
-        $existingSupplier = SupplierModel::where('supplier_name', $request->input('supplier_name'))
-            ->where('email', $request->input('email'))
-            ->where('contact_no', $request->input('contact_no'))
-            ->first();
+        $existingSupplier = (new SupplierModel)->SupplierExist($request);
 
         if ($existingSupplier) {
             return redirect()->back()->with('error', 'Supplier Name already exists.');
         }
 
+        if (!preg_match('/^09\d{9}$/', $request->input('contact_no'))) {
+            return redirect()->back()->with('error', 'Invalid contact number format. It should start with 09 and have 11 digits.');
+        }
+        
         // Update the category name if it doesn't already exist.
         $supplier = SupplierModel::find($request->input('id'));
         $supplier->supplier_name = $request->input('supplier_name');
@@ -267,13 +226,13 @@ class ManagerController extends Controller
      */
     public  function  stocks(Request $request)
     {
-        $categories = CategoryModel::where('status', 'Active')->get();
-        $suppliers = SupplierModel::where('status', 'Active')->get();
-        DB::statement("SET SQL_MODE=''");
-        $ItemStocks = ItemModel::where('status', 'Active')->groupby('name')->get();
+        $categories = (new CategoryModel)->getActiveCat();
+        $suppliers = (new SupplierModel)->getActiveSupplier(); 
+        $ItemStocks = (new ItemModel)->getActiveItem();
+
         $items = ItemModel::with('category', 'supplier')->get();
 
-        $lastBatch = BatchModel::latest('id')->first();
+        $lastBatch = (new BatchModel)->getLastbatch();
         $lastId = $lastBatch ? $lastBatch->id + 1 : 1;
 
         return view('manager.stocks', [
@@ -285,6 +244,11 @@ class ManagerController extends Controller
         ]);
     }
 
+    
+    /**
+     * For Restock Modal
+     * Only get items if status is "need replenish"
+     */
     public function getItems(Request $request)
     {
         $category_id = $request->input('category_id');
@@ -295,14 +259,14 @@ class ManagerController extends Controller
         })->when($supplier_id, function ($query) use ($supplier_id) {
             $query->where('supplier_id', $supplier_id);
         })->when($category_id && $supplier_id, function ($query) use ($category_id, $supplier_id) {
-        $query->where('no_of_stocks', '=', DB::raw('replenish'));
+        $query->where('no_of_stocks', '<=', DB::raw('replenish'));
     })->get();
 
         return response()->json($items);
     }
-
+    
     /**
-     * Create New Items
+     * Create New Items 
      */
     public function storeStocks(Request $request)
     {
@@ -374,14 +338,14 @@ class ManagerController extends Controller
 
         return redirect()->back()->with('success', 'Items inserted successfully.');
     }
-
+ 
 
     /**
      * Restock Item
      */
     public function storeRestock(Request $request)
-    {
-
+    { 
+        
         // Validation
         $validatedData = $request->validate([
             'category_id' => 'required',
@@ -408,7 +372,7 @@ class ManagerController extends Controller
         // Start a database transaction
         DB::beginTransaction();
 
-        try {
+        try {    
             // Insert into the batch_order table
             $batchOrder = BatchOrderModel::create([
                 'batch_id' => null,
@@ -430,7 +394,7 @@ class ManagerController extends Controller
             $batch = BatchModel::create([
                 'user_id' => $user,
             ]);
-
+            
             // Update batch_id in batch_order table
             $batchOrder->update(['batch_id' => $batch->id]);
 
@@ -497,20 +461,20 @@ class ManagerController extends Controller
             // If the item name already exists for a different item, return an error
             return redirect()->back()->with('error', 'Item name already exists for another item');
         }
-
+        
         // Update the Item table
         $item = ItemModel::find($itemId);
         $item->name = $request->input('name');
         $item->supplier_price = $request->input('supplier_price');
         $item->selling_price = $request->input('selling_price');
-        $item->category_id = $request->input('category_id');
-        $item->supplier_id = $request->input('supplier_id');
-        $item->replenish = $request->input('replenish');
+        $item->category_id = $request->input('category_id'); 
+        $item->supplier_id = $request->input('supplier_id'); 
+        $item->replenish = $request->input('replenish'); 
         $item->save();
 
         // Update the Batch Order table if needed
         $batch = BatchOrderModel::where('item_id', $itemId)->first();
-
+       
         if ($batch) {
             $batch->update([
                 'category_id' => $request->input('category_id'),
@@ -537,14 +501,17 @@ class ManagerController extends Controller
      */
     public  function  return()
     {
-        $categories = CategoryModel::where('status', 'Active')->get();
-        $suppliers = SupplierModel::where('status', 'Active')->get();
-        $ItemStocks = ItemModel::where('status', 'Active')->get();
-        $users = User::where('user_role', '3')->get();
+        $categories = (new CategoryModel)->getActiveCat();
+        $suppliers = (new SupplierModel)->getActiveSupplier(); 
+        $ItemStocks = (new ItemModel)->getActiveItem();
+
+        $users = (new User)->getAllEmployee();
         $grounds = ReturnGroundsModel::all();
+
         $return_items = ReturnItemModel::with('item','user')
         ->where('status', 'Active')
         ->get();
+
 
         return view('manager.return', [
             'categories' => $categories,
@@ -584,12 +551,12 @@ class ManagerController extends Controller
         ]);
 
         // Check if the transaction ID exists in the transaction table
-        $transactionExists = TransactionModel::where('id', $request->input('transaction_id'))->exists();
+        // $transactionExists = TransactionModel::where('id', $request->input('transaction_id'))->exists();
 
-        if (!$transactionExists) {
-            // If the transaction ID doesn't exist, return an error message
-            return redirect()->back()->with('error', 'Transaction ID does not exist');
-        }
+        // if (!$transactionExists) {
+        //     // If the transaction ID doesn't exist, return an error message
+        //     return redirect()->back()->with('error', 'Transaction ID does not exist');
+        // }
 
         // Create a new instance of the Return model
         $return = new ReturnItemModel;
@@ -647,15 +614,12 @@ class ManagerController extends Controller
         return redirect()->back()->with('success', 'Item deleted successfully.');
     }
 
+     /**
+     * Search Item based on input
+     */
     public function search(Request $request)
     {
-        $query = $request->get('query');
-        DB::statement("SET SQL_MODE=''");
-        $items = ItemModel::where('name', 'like', "%$query%")
-                            ->where('status', 'Active')
-                            ->groupby('name')
-                            ->get();
-
+        $items = (new ItemModel)->queryItem($request);
         return response()->json($items);
     }
 
@@ -667,67 +631,38 @@ class ManagerController extends Controller
 
     public function monthly(Request $request)
     {
-        DB::statement("SET SQL_MODE=''");
-        //Show all data from transaction table
-        $data = TransactionModel::select(
-                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
-                              DB::raw("SUM(total_amount) as total_amount"),
-                              DB::raw("SUM(total_profit) as total_profit")
-        )
-        ->groupBy('formatted_date')
-        ->get();
+        $data = (new TransactionModel)->getAllTransaction();
 
         if ($request->has('start_date') && $request->has('end_date')) {
             // Filter data based on the date range
-            $fromDate = $request->input('start_date');
-            $toDate = $request->input('end_date');
-            $toDate = Carbon::parse($toDate)->endOfDay();
-            DB::statement("SET SQL_MODE=''");
-            $data = TransactionModel::select(
-                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
-                              DB::raw("SUM(total_amount) as total_amount"),
-                              DB::raw("SUM(total_profit) as total_profit")
-            )
-            ->whereDate('created_at', '>=', $fromDate)
-            ->whereDate('created_at', '<=', $toDate)
-            ->groupBy('formatted_date')
-            ->get();
+            $data = (new TransactionModel)->FilterTransaction($request);
         }
 
-            DB::statement("SET SQL_MODE=''");
-            $currentYear = date('Y');
-            $monthlySales = TransactionModel::select(
-                            DB::raw("MONTH(created_at) as month"),
-                            DB::raw("SUM(total_amount_with_discount) as total_amount")
-            )
-                ->whereYear('created_at', $currentYear)
-                ->groupBy('month')
-                ->get();
-
-                $chartData = [];
-                // Initialize an array to store months with no data
-                $monthsWithNoData = [];
-                
-                // Loop through all 12 months
-                for ($month = 1; $month <= 12; $month++) {
-                    // Check if there is data for the current month
-                    $monthlySale = $monthlySales->firstWhere('month', $month);
-                
-                    if ($monthlySale) {
-                        // If data exists, add it to the chart data
-                        $chartData[] = [
-                            'name' => date('F', mktime(0, 0, 0, $monthlySale->month, 1)),
-                            'sales' => (double)$monthlySale->total_amount,
-                        ];
-                    } else {
-                        // If no data exists, add a placeholder value
-                        $monthsWithNoData[] = date('F', mktime(0, 0, 0, $month, 1));
-                        $chartData[] = [
-                            'name' => date('F', mktime(0, 0, 0, $month, 1)),
-                            'sales' => 0,
-                        ];
-                    }
+        //Bar Graph Backend
+           $monthlySales = (new TransactionModel)->GetMonthlySales();
+        // Initialize an array to store months with data
+            $chartData = [];
+        // Initialize an array to store months with no data
+            $monthsWithNoData = [];
+        // Loop through all 12 months
+            for ($month = 1; $month <= 12; $month++) {
+                // Check if there is data for the current month
+                $monthlySale = $monthlySales->firstWhere('month', $month);
+                if ($monthlySale) {
+                    // If data exists, add it to the chart data
+                    $chartData[] = [
+                        'name' => date('F', mktime(0, 0, 0, $monthlySale->month, 1)),
+                        'sales' => (double)$monthlySale->total_amount,
+                    ];
+                } else {
+                    // If no data exists, add a placeholder value
+                    $monthsWithNoData[] = date('F', mktime(0, 0, 0, $month, 1));
+                    $chartData[] = [
+                        'name' => date('F', mktime(0, 0, 0, $month, 1)),
+                        'sales' => 0,
+                    ];
                 }
+            }
         return view('manager.monthly', ['data' => $data, 'monthlySales' => $monthlySales, 'chartData' => $chartData]);
     }
 }

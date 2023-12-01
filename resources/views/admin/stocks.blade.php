@@ -182,7 +182,7 @@
                                     <td>{{ $item->selling_price}}</td>
                                     <td>{{ $item->no_of_stocks}}</td>
                                     <td>
-                                        @if ($item->no_of_stocks == $item->replenish)
+                                        @if ($item->no_of_stocks <= $item->replenish)
                                             <span class="badge badge-danger">Need Restocking</span>
                                         @else
                                             <span class="badge badge-success">Item Full</span>
@@ -203,10 +203,9 @@
                                         @else
                                         <button type="button" class="btn btn-upd-user" data-bs-toggle="modal" data-bs-target="#enable-stock-modal{{ $item->id }}"><i class="bi bi-x-circle-fill"></i></button>
                                         @endif
+                                        <!-- UPDATED TO ICON -->
+                                        <a  class="btn btn-upd-user" data-toggle="tooltip" data-placement="top" title="Download QR Code" href="{{ url('/generate',$item->id) }}" ><i class="bi bi-box-arrow-down" style="color: #12c300;"></i></a> 
 
-                                    </td>
-                                    <td>
-                                        <a  class="btn btn-success btn-sm" href="{{ url('/generate',$item->id) }}" >Download</a>
                                     </td>
                                 </tr>
                             @endforeach

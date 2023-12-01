@@ -182,7 +182,7 @@
                                     <td>{{ $item->selling_price}}</td>
                                     <td>{{ $item->no_of_stocks}}</td>
                                     <td>
-                                        @if ($item->no_of_stocks == $item->replenish)
+                                        @if ($item->no_of_stocks <= $item->replenish)
                                             <span class="badge badge-danger">Need Restocking</span>
                                         @else
                                             <span class="badge badge-success">Item Full</span>
@@ -428,7 +428,7 @@
                         var category_id = $('#category').val();
                         var supplier_id = $(this).val();
 
-                        $.get('/admin/getItems', { category_id: category_id, supplier_id: supplier_id }, function (data) {
+                        $.get('/manager/getItems', { category_id: category_id, supplier_id: supplier_id }, function (data) {
                             // Clear previous options
                             $('#item').empty();
 
