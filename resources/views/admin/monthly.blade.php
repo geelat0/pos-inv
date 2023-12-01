@@ -91,25 +91,26 @@
         @csrf
           <div class="row" style="margin-bottom: 10px;">
               <h4>Monthly Sales Table</h4>
-              <div class="col-md-3">
+              <div class="col-md-2">
                   <label for="start-date">Start Date:</label>
                   <input type="text" name="start_date" id="start-date" class="form-control" autocomplete="off">
               </div>
-              <div class="col-md-3 col-end-date">
+              <div class="col-md-2 col-end-date">
                   <label for="end-date">End Date:</label>
                   <input type="text" name="end_date"   id="end-date" class="form-control" autocomplete="off">
               </div>
-              <button type="submit">Filter</button>
+              <div class="col-md-2">
+                  <label for="end-date">End Date:</label>
+                  <button class="btn btn-primary form-control" type="submit">Filter</button>
+              </div>
           </div>
         </form>
 
-        <div class="col-md-3 align-self-end">
+        <div class="col-md-3 btn-group" style="width: 100%; margin-bottom: 1%;">
                 <button onclick="printTable()"  id="printButton" class="btn btn-primary btn-filter-date"><i class="bi bi-printer-fill">&nbsp;</i>Print Report</button>
+                <button onclick="extractCSV()" class="btn btn-primary btn-filter-date"><i class="bi bi-box-arrow-down">&nbsp;</i>Download Report</button>
         </div>
-        
-        <div class="col-md-3 align-self-end">
-                <button onclick="extractCSV()" class="btn btn-primary btn-filter-date"><i class="bi bi-printer-fill">&nbsp;</i>Download Report</button>
-        </div>
+
         <table id="dataTable" class="table table-hover border p-2" style="width:100%">
             <thead class="">
                 <tr>
@@ -150,51 +151,49 @@
 
      <script>
             Highcharts.chart('container', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'BITS&BYTES Monthly Sales Graph',
-                align: 'left'
-            },
-            subtitle: {
-                text:
-                    'Source: <a target="_blank" ' +
-                    'href="#">Bits&Bytes</a>',
-                align: 'left'
-            },
-            xAxis: {
-                categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                crosshair: true,
-                accessibility: {
-                    description: 'Month'
-                }
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Sales'
-                }
-            },
-            tooltip: {
-                valueSuffix: ''
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: [
-                {
-                    name: 'Total Sales per Month',
-                    data: [406292, 260000, 107000, 68300, 27500, 14500, 406292, 260000, 107000, 68300, 27500, 14500]
+                chart: {
+                    type: 'column'
                 },
-            ]
-        });
-
-      </script>
-
+                title: {
+                    text: 'BITS&BYTES Monthly Sales Graph',
+                    align: 'left'
+                },
+                subtitle: {
+                    text: 'Source: <a target="_blank" href="#">Bits&Bytes</a>',
+                    align: 'left'
+                },
+                xAxis: {
+                    categories: <?php echo json_encode(array_column($chartData, 'name')); ?>,
+                    crosshair: true,
+                    accessibility: {
+                        description: 'Month'
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Sales'
+                    }
+                },
+                tooltip: {
+                    valueSuffix: ''
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [
+                    {
+                        name: 'Total Sales',
+                        data: <?php echo json_encode(array_values(array_column($chartData, 'sales'))); ?>
+                        
+                    },
+                ]
+            });
+    </script>
+    
 <!-- ------------------------------------------------------------------ -->
     <!-- FILTER DATE -->
     <script>
@@ -225,7 +224,7 @@
 
     <script>
         $(document).ready(function() {
-            $('#example').DataTable();
+            $('#dataTable').DataTable();
         });
     </script>
 
@@ -286,8 +285,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="{{ asset('js/scripts.js') }}"></script>
-
-
 <!-- ------------------------------------------------------- -->
     </body>
+    
 </html>

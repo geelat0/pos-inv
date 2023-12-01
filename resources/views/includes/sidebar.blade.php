@@ -14,8 +14,8 @@
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url('admin/user-management') }}"><i class="bi bi-people-fill">&nbsp;</i>System Users</a>
                 @endif
                 @if(Auth::user()->isManager())
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('admin')}}"><i class="bi bi-bar-chart-line-fill">&nbsp;</i>Dashboard</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!"><i class="bi bi-calendar-event-fill">&nbsp;</i>Monthly Sales</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('manager')}}"><i class="bi bi-bar-chart-line-fill">&nbsp;</i>Dashboard</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('manager/monthly')}}"><i class="bi bi-calendar-event-fill">&nbsp;</i>Monthly Sales</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('manager/stocks')}}"><i class="bi bi-box">&nbsp;</i>Stocks</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('manager/supplier')}}"><i class="bi bi-truck">&nbsp;</i>Supplier</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{url('manager/item-category')}}"><i class="bi bi-list-ol">&nbsp;</i>Item Category</a>

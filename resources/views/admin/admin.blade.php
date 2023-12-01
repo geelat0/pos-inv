@@ -135,42 +135,57 @@
       <div class="row p-3">
 
         <!-- FILTER DATE -->
-        <form action="">
+        <form id="filterForm"  action="/admin/"  method="get">
+        @csrf
           <div class="row" style="margin-bottom: 10px;">
               <h4>Monthly Sales Table</h4>
-              <div class="col-md-3">
+              <div class="col-md-2">
                   <label for="start-date">Start Date:</label>
-                  <input type="text" id="start-date" class="form-control" autocomplete="off">
+                  <input type="text" name="start_date" id="start-date" class="form-control" autocomplete="off">
               </div>
-              <div class="col-md-3 col-end-date">
+              <div class="col-md-2 col-end-date">
                   <label for="end-date">End Date:</label>
-                  <input type="text" id="end-date" class="form-control" autocomplete="off">
+                  <input type="text" name="end_date"   id="end-date" class="form-control" autocomplete="off">
               </div>
-              <div class="col-md-3 align-self-end">
-                <button class="btn btn-primary btn-filter-date"><i class="bi bi-printer-fill">&nbsp;</i>Download Report</button>
+              <div class="col-md-2">
+                  <label for="end-date">Filter Date:</label>
+                  <button class="form-control btn btn-primary" type="submit">Filter</button>
               </div>
           </div>
         </form>
+        
+        <!-- <div class="col-md-3 align-self-end">
+                <button onclick="extractCSV()" class="btn btn-primary btn-filter-date"><i class="bi bi-printer-fill">&nbsp;</i>Download Report</button>
+        </div> -->
 
-        <table id="example" class="table table-hover border p-2" style="width:100%">
+        <table id="dataTable" class="table table-hover border p-2" style="width:100%">
             <thead class="">
                 <tr>
                     <th>Date</th>
                     <th>Total Sales</th>
                     <th>Total Profit</th>
                 </tr>
+                <tr>
+                    <th style="color: #12c300; font-size: 14px;">Total:</th>
+                    <th style="color: #12c300; font-size: 14px;">{{ $data->sum('total_amount') }}</th>
+                    <th style="color: #12c300; font-size: 14px;">{{ $data->sum('total_profit') }}</th>
+                </tr>
             </thead>
-            <tbody>
+            <tbody id="tableBody">
+            @forelse($data as $item)
                 <tr>
-                    <td>11/11/2023</td>
-                    <td>150000</td>
-                    <td>15000</td>
+                    <td>{{ $item->formatted_date }}</td>
+                    <td>{{ $item->total_amount }}</td>
+                    <td>{{ $item->total_profit }}</td>
                 </tr>
+            @empty
                 <tr>
-                    <td>11/12/2023</td>
-                    <td>150000</td>
-                    <td>15000</td>
+                    <td colspan="number_of_columns">No data found</td>
                 </tr>
+            @endforelse
+            </tbody>
+
+            
         </table>
       </div>
     </div>
@@ -181,7 +196,7 @@
      <script src="http://code.highcharts.com/highcharts-more.js"></script>
      <script src="http://code.highcharts.com/modules/exporting.js"></script>
 
-     <script>
+     <!-- <script>
             Highcharts.chart('container', {
             chart: {
                 type: 'column'
@@ -226,7 +241,53 @@
             ]
         });
 
-      </script>
+    </script> -->
+
+    <script>
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'BITS&BYTES Monthly Sales Graph',
+                    align: 'left'
+                },
+                subtitle: {
+                    text: 'Source: <a target="_blank" href="#">Bits&Bytes</a>',
+                    align: 'left'
+                },
+                xAxis: {
+                    categories: <?php echo json_encode(array_column($chartData, 'name')); ?>,
+                    crosshair: true,
+                    accessibility: {
+                        description: 'Month'
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Sales'
+                    }
+                },
+                tooltip: {
+                    valueSuffix: ''
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [
+                    {
+                        name: 'Total Sales',
+                        data: <?php echo json_encode(array_values(array_column($chartData, 'sales'))); ?>
+                        
+                    },
+                ]
+            });
+    </script>
+
 
 <!-- ------------------------------------------------------------------ -->
     <!-- FILTER DATE -->
@@ -258,9 +319,48 @@
 
         <script>
             $(document).ready(function() {
-                $('#example').DataTable();
+                $('#dataTable').DataTable();
             });
         </script>
+
+    <!-- GENERATE CSV FILE -->
+
+    <script>
+        function extractCSV() {
+            // Get table data
+            var table = document.getElementById("dataTable"); // Replace "yourTableId" with the actual ID of your table
+            var rows = table.querySelectorAll("tbody tr");
+            var header = table.querySelectorAll("thead tr")[0];
+
+            // Create CSV content with header
+            var csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Include header row
+            var headerData = [];
+            header.querySelectorAll("th").forEach(function (cell) {
+                headerData.push(cell.innerText);
+            });
+            csvContent += headerData.join(",") + "\n";
+
+            // Include data rows
+            rows.forEach(function (row) {
+                var rowData = [];
+                row.querySelectorAll("td").forEach(function (cell) {
+                    rowData.push(cell.innerText);
+                });
+                csvContent += rowData.join(",") + "\n";
+            });
+
+            // Create a download link and trigger the download
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "sales_report.csv");
+            document.body.appendChild(link); // Required for Firefox
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
 
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -21,10 +21,70 @@ use Illuminate\Support\Facades\Response;
 class AdminController extends Controller
 {
 
-    public  function  index()
+    public  function  index(Request $request)
     {
-        $categories = CategoryModel::all();
-        return view('admin.admin', ['categories'=> $categories]);
+        DB::statement("SET SQL_MODE=''");
+        //Show all data from transaction table
+        $data = TransactionModel::select(
+                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
+                              DB::raw("SUM(total_amount) as total_amount"),
+                              DB::raw("SUM(total_profit) as total_profit")
+        )
+        ->groupBy('formatted_date')
+        ->get();
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            // Filter data based on the date range
+            $fromDate = $request->input('start_date');
+            $toDate = $request->input('end_date');
+            $toDate = Carbon::parse($toDate)->endOfDay();
+            DB::statement("SET SQL_MODE=''");
+            $data = TransactionModel::select(
+                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
+                              DB::raw("SUM(total_amount) as total_amount"),
+                              DB::raw("SUM(total_profit) as total_profit")
+            )
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate)
+            ->groupBy('formatted_date')
+            ->get();
+        }
+
+            DB::statement("SET SQL_MODE=''");
+            $currentYear = date('Y');
+            $monthlySales = TransactionModel::select(
+                            DB::raw("MONTH(created_at) as month"),
+                            DB::raw("SUM(total_amount_with_discount) as total_amount")
+            )
+                ->whereYear('created_at', $currentYear)
+                ->groupBy('month')
+                ->get();
+
+                $chartData = [];
+                // Initialize an array to store months with no data
+                $monthsWithNoData = [];
+                
+                // Loop through all 12 months
+                for ($month = 1; $month <= 12; $month++) {
+                    // Check if there is data for the current month
+                    $monthlySale = $monthlySales->firstWhere('month', $month);
+                
+                    if ($monthlySale) {
+                        // If data exists, add it to the chart data
+                        $chartData[] = [
+                            'name' => date('F', mktime(0, 0, 0, $monthlySale->month, 1)),
+                            'sales' => (double)$monthlySale->total_amount,
+                        ];
+                    } else {
+                        // If no data exists, add a placeholder value
+                        $monthsWithNoData[] = date('F', mktime(0, 0, 0, $month, 1));
+                        $chartData[] = [
+                            'name' => date('F', mktime(0, 0, 0, $month, 1)),
+                            'sales' => 0,
+                        ];
+                    }
+                }
+        return view('admin.admin', ['data' => $data, 'monthlySales' => $monthlySales, 'chartData' => $chartData]);
     }
 
 
@@ -608,6 +668,7 @@ class AdminController extends Controller
 
     public function monthly(Request $request)
     {
+        DB::statement("SET SQL_MODE=''");
         //Show all data from transaction table
         $data = TransactionModel::select(
                               DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
@@ -622,7 +683,7 @@ class AdminController extends Controller
             $fromDate = $request->input('start_date');
             $toDate = $request->input('end_date');
             $toDate = Carbon::parse($toDate)->endOfDay();
-
+            DB::statement("SET SQL_MODE=''");
             $data = TransactionModel::select(
                               DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
                               DB::raw("SUM(total_amount) as total_amount"),
@@ -634,7 +695,40 @@ class AdminController extends Controller
             ->get();
         }
 
+            DB::statement("SET SQL_MODE=''");
+            $currentYear = date('Y');
+            $monthlySales = TransactionModel::select(
+                            DB::raw("MONTH(created_at) as month"),
+                            DB::raw("SUM(total_amount_with_discount) as total_amount")
+            )
+                ->whereYear('created_at', $currentYear)
+                ->groupBy('month')
+                ->get();
 
-        return view('admin.monthly', compact('data'));
+                $chartData = [];
+                // Initialize an array to store months with no data
+                $monthsWithNoData = [];
+                
+                // Loop through all 12 months
+                for ($month = 1; $month <= 12; $month++) {
+                    // Check if there is data for the current month
+                    $monthlySale = $monthlySales->firstWhere('month', $month);
+                
+                    if ($monthlySale) {
+                        // If data exists, add it to the chart data
+                        $chartData[] = [
+                            'name' => date('F', mktime(0, 0, 0, $monthlySale->month, 1)),
+                            'sales' => (double)$monthlySale->total_amount,
+                        ];
+                    } else {
+                        // If no data exists, add a placeholder value
+                        $monthsWithNoData[] = date('F', mktime(0, 0, 0, $month, 1));
+                        $chartData[] = [
+                            'name' => date('F', mktime(0, 0, 0, $month, 1)),
+                            'sales' => 0,
+                        ];
+                    }
+                }
+        return view('admin.monthly', ['data' => $data, 'monthlySales' => $monthlySales, 'chartData' => $chartData]);
     }
 }
