@@ -207,6 +207,10 @@ label{
   color: #ff0000;
 }
 
+.cam-container{
+  width: 35% !important;
+}
+
 /* tablet-responsive */
 @media (min-width: 768px) and (max-width: 1024px) {
   .btn-add-user{
@@ -267,5 +271,18 @@ label{
 
   .card-growth-svg{
     margin-top: 20px;
+  }
+
+  .cam-container-row{
+    padding-left: 15% !important;
+    padding-right: 15% !important;
+  }
+
+  .cam-container{
+    width: 100% !important;
+  }
+
+  #reader__dashboard_section_csr button{
+    font-size: 10px !important;
   }
 }

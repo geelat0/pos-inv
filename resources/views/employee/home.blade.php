@@ -48,6 +48,7 @@
 
     <link href="{{ asset('css/pos.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/pos-nav.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/manage-user.css') }}" rel="stylesheet" />
 
     <script src="{{ asset('js/html5-qrcode.min.js') }}">  </script>
 
@@ -72,8 +73,8 @@
             @endif
 
 
-        <div class="col-sm-12 d-flex justify-content-center">
-            <div  style="width: 20%;" id="reader"></div>
+        <div class="col-sm-12 d-flex justify-content-center cam-container-row">
+            <span class="cam-container" id="reader"></span>
 
         </div>
     </div>

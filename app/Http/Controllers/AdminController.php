@@ -277,7 +277,7 @@ class AdminController extends Controller
         })->when($supplier_id, function ($query) use ($supplier_id) {
             $query->where('supplier_id', $supplier_id);
         })->when($category_id && $supplier_id, function ($query) use ($category_id, $supplier_id) {
-        $query->where('no_of_stocks', '=', DB::raw('replenish'));
+        $query->where('no_of_stocks', '<=', DB::raw('replenish'));
     })->get();
 
         return response()->json($items);
