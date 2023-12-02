@@ -52,7 +52,7 @@
             <li class="nav-item dropdown profile">
                 <a class="employee-profile" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 30px;"><i class="bi bi-person-circle" style="font-size: 24px;">&nbsp;</i>Employee Name</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Profile</a>
+                    <a class="dropdown-item" href="/profile/{{ Auth::user()->id }}">Profile</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{ url('/') }}/logout" style="color: #ff0000;"><i class="bi bi-box-arrow-left" style="font-size: 15px;">&nbsp;</i>Logout</a>
                 </div>

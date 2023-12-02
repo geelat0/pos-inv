@@ -23,14 +23,18 @@ Route::get('/home', [Auth\AuthController::class, 'home']);
 Route::get('/logout', [Auth\AuthController::class, 'logout']);
 
 
-Route::get('/generate/{id}', [\App\Http\Controllers\BarcodeController::class, 'index']);
 
 
 
-Route::get('/profile/{id}', [\App\Http\Controllers\ProfileController::class, 'index']);
 
+Route::middleware(['auth'])->group(function () {
 
+    Route::get('/generate/{id}', [\App\Http\Controllers\BarcodeController::class, 'index']);
 
+    Route::get('/profile/{id}', [\App\Http\Controllers\ProfileController::class, 'index']);
+    Route::post('/profile-update', [\App\Http\Controllers\ProfileController::class, 'update']);
+    Route::post('/change-password/{id}', [\App\Http\Controllers\ProfileController::class, 'changePassword']);
+});
 
 
 
