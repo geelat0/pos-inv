@@ -82,8 +82,8 @@
 
                                 <tr>
                                     <td class="table-td">{{ $order->item->name }}</td>
-                                    <td class="table-td">{{ $order->quantity }}</td>
-                                    <td class="table-td">{{ $order->amount}}</td>
+                                    <td class="table-td">{{ $order->quantity }} x {{ $order->amount}}</td>
+                                    <td class="table-td">{{ number_format($order->quantity  *  $order->amount ,2)}} </td>
                                 </tr>
 
                             @endforeach
