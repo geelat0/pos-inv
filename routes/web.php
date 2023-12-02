@@ -27,6 +27,10 @@ Route::get('/generate/{id}', [\App\Http\Controllers\BarcodeController::class, 'i
 
 
 
+Route::get('/profile/{id}', [\App\Http\Controllers\ProfileController::class, 'index']);
+
+
+
 
 
 

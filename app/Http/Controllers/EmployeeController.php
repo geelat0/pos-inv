@@ -50,7 +50,9 @@ class EmployeeController extends Controller
         $searchTerm = $request->input('term');
 
        return    $items = ItemModel::where('id', 'like', '%' . $searchTerm . '%')
+
             ->orWhere('name', 'like', '%' . $searchTerm . '%')
+            ->Where('status','Active')
             ->get();
     }
 
@@ -68,27 +70,41 @@ class EmployeeController extends Controller
     {
 
 
-
-
         $user = Auth::user();
         $item = ItemModel::find($request->id);
-
-
 
         if (!$user || !$item) {
             return response()->json(['error' => 'User or Item not found'], 404);
         }
 
-
         $amount =  $item->selling_price;
-
 
         // Check if the item already exists in the user's cart
         $existingCart = CartModel::where('user_id', $user->id)
             ->where('item_id', $item->id)
             ->first();
 
+
+      //  dd( $item->no_of_stocks);
+
         if ($existingCart) {
+
+            $item_quantity =  $existingCart->quantity;
+            $cart_quantity =  $item_quantity  + 1  ;
+
+            if ( $cart_quantity  > $item->no_of_stocks ) {
+
+
+                return response()->json(['success' => false , 'message' => 'No more stocks'], 201);
+            }
+//            dd($cart_quantity . '-' . $item->no_of_stocks);
+        }
+
+
+
+
+        if ($existingCart) {
+
             // If the item exists, increment the quantity
             $existingCart->quantity += 1;
             $existingCart->save();
@@ -97,6 +113,12 @@ class EmployeeController extends Controller
 
             return response()->json(['data' => $all], 201);
         }
+
+
+        if (  $item->no_of_stocks  == 0 ) {
+            return response()->json(['success' => false , 'message' => 'No more stocks'], 201);
+        }
+
 
         // If the item does not exist in the cart, create a new cart entry
         $cart = new CartModel([
@@ -110,11 +132,13 @@ class EmployeeController extends Controller
         $cart->item()->associate($item);
 
         $cart->save();
-
-
         $all =  CartModel::with('item')->where('user_id',Auth::id())->get();
 
-        return response()->json(['data' => $all], 201);
+        return response()->json([
+            'success' => true,
+            'message' => '',
+//            'data' => $all
+        ] );
     }
 
 
@@ -135,6 +159,17 @@ class EmployeeController extends Controller
         $cartItem = CartModel::find($id);
 
 
+
+        //check if item has enough stocks
+
+        $item = ItemModel::find($cartItem->item_id);
+
+        if ($new_quantity  > $item->no_of_stocks) {
+            return response()->json(['success' => false , 'message' => 'Stock is only '. $item->no_of_stocks ,'stock' =>  $item->no_of_stocks ], 201);
+        }
+
+        //
+
         if (!$cartItem) {
             return response()->json(['error' => 'Cart item not found'], 404);
         }
@@ -147,7 +182,9 @@ class EmployeeController extends Controller
 
         $totalAmount = $this->getTotalofCart();
 
-        return response()->json(['data' => $cartItem ,'response'=>$new_amount , 'new_total_amount' => $totalAmount], 200);
+        $data =  $cartItem = CartModel::with('item')->where('id',$id)->first();
+
+        return response()->json(['data' => $data,'response'=>$new_amount , 'new_total_amount' => $totalAmount ,'success' => true], 200);
 
 
 
@@ -253,6 +290,15 @@ class EmployeeController extends Controller
                 'profit' => $profit
             ]);
             $order->save();
+
+            $item = ItemModel::find($cart->item_id);
+
+            if ($item->no_of_stocks >= $cart->quantity ) {
+                $item->decrement('no_of_stocks', $cart->quantity );
+            }
+
+
+
         }
 
 
@@ -261,6 +307,10 @@ class EmployeeController extends Controller
 
 
          CartModel::where('user_id', Auth::id())->delete();
+
+
+
+        // Check if there are sufficient stocks
 
 
 
