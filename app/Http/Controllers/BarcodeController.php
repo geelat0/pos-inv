@@ -104,6 +104,7 @@ class BarcodeController extends Controller
             // Format the number with leading zeros and the desired prefix
         $filename = sprintf('B&B-%06d', $data);
 
+
         // Encode the data using base64
 
 

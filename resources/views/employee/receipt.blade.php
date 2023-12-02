@@ -44,6 +44,9 @@
         </div>
     </div>
 
+
+
+
     <div id="orderSlip">
         <div class="row">
             <div class="col-sm-12">
@@ -63,6 +66,7 @@
                     <div class="card-body">
                         <div class="row border-bottom">
                             <div class="col-sm-12">
+                                <h6 style="font-size: 12px;">Transaction Code:&nbsp;<b>{{ $trans->id }}</b></h6>
                                 <h6 style="font-size: 12px;">Date:&nbsp;<b>{{ $trans->created_at }}</b></h6>
                                 <h6 style="font-size: 12px;">Prepared by:&nbsp;<b>{{ $trans->user->first_name  }}<span class="ms-2 me-3"> {{ $trans->user->last_name  }}</span> </b></h6>
                             </div>
