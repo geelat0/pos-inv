@@ -23,4 +23,9 @@ class OrderModel extends Model
     {
         return $this->hasOne(ItemModel::class ,'id', 'item_id');
     }
+
+    public function to_item()
+    {
+        return $this->belongsTo(Item::class, 'item_id');
+    }
 }

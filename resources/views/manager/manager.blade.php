@@ -41,7 +41,7 @@
 
     </head>
     <body>
-        @include('includes.sidebar')
+    @include('includes.sidebar')
         @include('includes.page-wrapper')
 
     <div class="container-fluid">
@@ -57,14 +57,14 @@
                         <div class="card-body">
                           <h4 class="card-title">Total Sale</h4>
                           <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
-                          <h1 style="color: #1d2365;"><b>P</b>155000</h1>
+                          <h1 style="color: #1d2365;"><b>P</b>{{ number_format($totalSale) }}</h1>
                         </div>
                       </div>
                       <div class="card monthly-sale-card mt-3" style="width: 100%;">
                         <div class="card-body">
                           <h4 class="card-title">Total Profit</h4>
                           <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
-                          <h1 style="color: #1d2365;"><b>P</b>15000</h1>
+                          <h1 style="color: #1d2365;"><b>P</b>{{ number_format($totalProfit) }}</h1>
                         </div>
                       </div>
                   </div>
@@ -72,11 +72,15 @@
               </div>
               <div class="col-sm-8">
                 <div class="card-body">
+                @if($topItem)
                   <div class="row" style="background-color: #2b3499; border: 1px solid #c6c7c6; border-radius: 10px; padding: 1%;">
                     <h2 class="card-title" style="font-weight: bold; color: #ffd099;">TOP 1 ITEM!</h2>
-                    <h4 class="card-title" style=" color: #ffd099;">Item name here</h4>
-                    <p style="color: #ffd099;">Category 1</p>
+                    <h4 class="card-title" style=" color: #ffd099;">{{ $topItem->item->name }}</h4>
+                    <p style="color: #ffd099;">{{ $topItem->item->category->category_name }}</p>
                   </div>
+                @else
+                    <p>No top-selling item found.</p>
+                @endif
                   <div class="row">
                   <table id="" class="table" style="width:100%">
                     <thead class="">
@@ -87,26 +91,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                    @foreach($topItems as $key => $items)
                         <tr>
-                            <td>2</td>
-                            <td>Item2</td>
-                            <td>Category1</td>
+                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $items->item->name }}</td>
+                            <td>{{ $items->item->category->category_name }}</td>
                         </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Item3</td>
-                            <td>Category2</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Item3</td>
-                            <td>Category2</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Item3</td>
-                            <td>Category2</td>
-                        </tr>
+                    @endforeach
                 </table>
                   </div>
                 </div>
@@ -117,12 +108,15 @@
 
         <div class="container-fluid">
           <div class="col-sm">
-            <div class="alert alert-success" role="alert" style="width: 100%;">
-              All items are Full. No need to restock for now.
-            </div>
+        @if($itemsNeedReplenishment > 0)
             <div class="alert alert-danger" role="alert">
-              Certain items need replenishment!
+                Certain items need replenishment!
             </div>
+        @else
+            <div class="alert alert-success" role="alert" style="width: 100%;">
+                All items are Full. No need to restock for now.
+            </div>
+        @endif
           </div>
         </div>
 
@@ -195,53 +189,6 @@
      <script src="http://code.highcharts.com/highcharts.js"></script>
      <script src="http://code.highcharts.com/highcharts-more.js"></script>
      <script src="http://code.highcharts.com/modules/exporting.js"></script>
-
-     <!-- <script>
-            Highcharts.chart('container', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'BITS&BYTES Monthly Sales Graph',
-                align: 'left'
-            },
-            subtitle: {
-                text:
-                    'Source: <a target="_blank" ' +
-                    'href="#">Bits&Bytes</a>',
-                align: 'left'
-            },
-            xAxis: {
-                categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                crosshair: true,
-                accessibility: {
-                    description: 'Month'
-                }
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Sales'
-                }
-            },
-            tooltip: {
-                valueSuffix: ''
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: [
-                {
-                    name: 'Total Sales per Month',
-                    data: [406292, 260000, 107000, 68300, 27500, 14500, 406292, 260000, 107000, 68300, 27500, 14500]
-                },
-            ]
-        });
-
-    </script> -->
 
     <script>
             Highcharts.chart('container', {

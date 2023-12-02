@@ -27,6 +27,12 @@ class ManagerController extends Controller
             $data = (new TransactionModel)->FilterTransaction($request);
         }
 
+        $topItem = (new ItemModel)->getTopItem();
+        $topItems = (new ItemModel)->getTop5();
+        $itemsNeedReplenishment = (new ItemModel)->replenishment();
+        $totalSale = TransactionModel::sum('total_amount_with_discount');
+        $totalProfit = TransactionModel::sum('total_profit') * -1;
+
         //Bar Graph Backend
            $monthlySales = (new TransactionModel)->GetMonthlySales();
         // Initialize an array to store months with data
@@ -52,7 +58,15 @@ class ManagerController extends Controller
                     ];
                 }
             }
-        return view('manager.manager', ['data' => $data, 'monthlySales' => $monthlySales, 'chartData' => $chartData]);
+        return view('manager.manager', ['data' => $data, 
+                                    'monthlySales' => $monthlySales, 
+                                    'chartData' => $chartData, 
+                                    'totalSale' => $totalSale,
+                                    'totalProfit' => $totalProfit, 
+                                    'topItem' => $topItem,
+                                    'topItems' => $topItems,
+                                    'itemsNeedReplenishment' => $itemsNeedReplenishment,
+                                ]);
     }
 
 
@@ -551,12 +565,12 @@ class ManagerController extends Controller
         ]);
 
         // Check if the transaction ID exists in the transaction table
-        // $transactionExists = TransactionModel::where('id', $request->input('transaction_id'))->exists();
+        $transactionExists = TransactionModel::where('id', $request->input('transaction_id'))->exists();
 
-        // if (!$transactionExists) {
-        //     // If the transaction ID doesn't exist, return an error message
-        //     return redirect()->back()->with('error', 'Transaction ID does not exist');
-        // }
+        if (!$transactionExists) {
+            // If the transaction ID doesn't exist, return an error message
+            return redirect()->back()->with('error', 'Transaction ID does not exist');
+        }
 
         // Create a new instance of the Return model
         $return = new ReturnItemModel;

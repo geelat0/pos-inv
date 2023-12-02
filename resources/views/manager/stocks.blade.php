@@ -202,6 +202,7 @@
                                         @else
                                         <button type="button" class="btn btn-upd-user" data-bs-toggle="modal" data-bs-target="#enable-stock-modal{{ $item->id }}"><i class="bi bi-x-circle-fill"></i></button>
                                         @endif
+                                        <a  class="btn btn-upd-user" data-toggle="tooltip" data-placement="top" title="Download QR Code" href="{{ url('/generate',$item->id) }}" ><i class="bi bi-box-arrow-down" style="color: #12c300;"></i></a> 
                                     </td>
                                 </tr>
                             @endforeach

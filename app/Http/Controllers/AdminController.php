@@ -11,6 +11,7 @@ use App\Models\CategoryModel;
 use App\Models\SupplierModel;
 use Illuminate\Support\Carbon;
 use App\Models\BatchOrderModel;
+use App\Models\OrderModel;
 use App\Models\ReturnItemModel;
 use App\Models\TransactionModel;
 use App\Models\ReturnGroundsModel;
@@ -29,6 +30,12 @@ class AdminController extends Controller
             // Filter data based on the date range
             $data = (new TransactionModel)->FilterTransaction($request);
         }
+
+        $topItem = (new ItemModel)->getTopItem();
+        $topItems = (new ItemModel)->getTop5();
+        $itemsNeedReplenishment = (new ItemModel)->replenishment();
+        $totalSale = TransactionModel::sum('total_amount_with_discount');
+        $totalProfit = TransactionModel::sum('total_profit') * -1;
 
         //Bar Graph Backend
            $monthlySales = (new TransactionModel)->GetMonthlySales();
@@ -55,7 +62,15 @@ class AdminController extends Controller
                     ];
                 }
             }
-        return view('admin.admin', ['data' => $data, 'monthlySales' => $monthlySales, 'chartData' => $chartData]);
+        return view('admin.admin', ['data' => $data, 
+                                    'monthlySales' => $monthlySales, 
+                                    'chartData' => $chartData, 
+                                    'totalSale' => $totalSale,
+                                    'totalProfit' => $totalProfit, 
+                                    'topItem' => $topItem,
+                                    'topItems' => $topItems,
+                                    'itemsNeedReplenishment' => $itemsNeedReplenishment,
+                                ]);
     }
 
 
