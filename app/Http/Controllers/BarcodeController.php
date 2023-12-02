@@ -97,11 +97,22 @@ class BarcodeController extends Controller
     public  function index($data){
 
 
+        // Define dynamic parameters
+        $type = 'qr';
+        $format = 'png';
 
+            // Format the number with leading zeros and the desired prefix
+        $filename = sprintf('B&B-%06d', $data);
+
+        // Encode the data using base64
 
 
 // Construct the API URL with dynamic parameters
-        $apiUrl =  "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=$data";
+        $apiUrl = "https://barcode.orcascan.com/?type=$type&data=$data&format=$format&text=" . urlencode($filename);
+
+
+// Construct the API URL with dynamic parameters
+//        $apiUrl =  "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=$data";
 
         // Perform a HTTP request to the API
         $response = Http::get($apiUrl);
@@ -109,7 +120,7 @@ class BarcodeController extends Controller
         // Set the appropriate headers for SVG content
         $headers = [
             'Content-Type' => 'image/png',
-            'Content-Disposition' => 'attachment; filename="'.$data.'.png"',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'.png"',
         ];
 
         // Return the SVG content with headers

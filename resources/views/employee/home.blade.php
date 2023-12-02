@@ -559,13 +559,14 @@
 
 
 
-
         quantityButton();
     }
 
 
 
     function  quantityButton(){
+
+        var old =     $('.quantity-input').val();
 
         $('.quantity-input').on('change', function() {
             // Get the new value when the input changes
@@ -575,6 +576,9 @@
             var id = $(this).data('id');
 
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            var old_quantity = $(this).data('old-quantity');
+
 
             // Reference to the current input field
             var $inputField = $(this);
@@ -589,19 +593,33 @@
 
 
 
+                    if(response.data){
+
+                        location.reload(); //  temp fix
+
+                        // Assuming the server response contains the updated value
+                        var updatedValue = response.response; // Adjust this based on your actual response
+
+                        // Update the corresponding <td> with the new value
+                        $inputField.closest('tr').find('td:last').text(updatedValue);
+
+                        var to_add = parseFloat(response.new_total_amount); // Value to adds\
+
+                        $('#total-amount').val( to_add.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+                        $('#modal-total').val(to_add.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ''));
+
+                        renderOrder(response.data)
+                    }else{
+                        alert(response.message);
+                    }
 
 
-                    // Assuming the server response contains the updated value
-                    var updatedValue = response.response; // Adjust this based on your actual response
 
-                    // Update the corresponding <td> with the new value
-                    $inputField.closest('tr').find('td:last').text(updatedValue);
 
-                    var to_add = parseFloat(response.new_total_amount); // Value to adds\
 
-                    $('#total-amount').val( to_add.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
-                    $('#modal-total').val(to_add.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ''));
+
 
 
 
@@ -643,7 +661,7 @@
                             var row = $('<div class="row"></div>');
 
                             // Create the col-sm-8 div with the text
-                            var col8 = $('<div class="col-sm-8"></div>').append('<p class="text-uppercase">' + item.name +  '</p>');
+                            var col8 = $('<div class="col-sm-8"></div>').append('<p class="text-uppercase">' + item.name +  ' - ₱ ' +  item.selling_price  +'</p>');
 
                             // Create the col-sm-4 div with the "Add" button
                             var col4 = $('<div class="col-sm-4"></div>').append(`<button type="submit"  data-id="${item.id}" class=" btn-add btn btn-primary btn-sm">Add</button>`);
@@ -655,6 +673,7 @@
 
                             $('#result-container').append(row);
                         });
+
                     }
 
                     //
@@ -672,12 +691,18 @@
                             type: "post", // Use "GET" or "POST" depending on your needs
                             url: "/employee/add-cart",
                             data: { id: id , _token:csrfToken }, // Pass the search term to the server
-                            success: function(response) {
+                            success: function(data) {
                                 // Handle the successful response from the server
-                                console.log(response);
+                                console.log(data);
 
 
-                                renderOrder(response.data);
+
+                                if(data.data){
+                                    renderOrder(data.data)
+                                }else{
+                                    alert(data.message);
+                                }
+
 
 
 
@@ -748,17 +773,26 @@
                     error: function() { // if error occured
                         // alert("Error occured.please try again");
                     },
+                    dataType: 'json',
                     success: function (data) {
 
-                        console.log('success');
+                        console.log(data);
+                        console.log('Data success:', data.success);
 
-                        renderOrder(data.data)
+
+                        if(data.data){
+                            renderOrder(data.data)
+                        }else{
+                            alert(data.message);
+                        }
+
+
 
                     }
                 });
                 //
                 flag = false;
-                setTimeout(()=>flag=true, 1000);
+                setTimeout(()=>flag=true, 3000);
             }
 
 
@@ -779,9 +813,24 @@
 
 
 
+        $('.btn-print-reciept').click(function (e) {
+
+                var modal_total = $('#modal-total').val();
+               $('#modal-grandtotal').val(modal_total);
+               $('#modal-amountrecieved').val('');
+               $('#modal-discount').val(0);
+
+
+
+        });
+
+
+
         // When the button is clicked
         $('#pay-form').submit(function (e) {
             e.preventDefault(); // Prevent the default form submission
+
+
 
 
             // Get the grand total
