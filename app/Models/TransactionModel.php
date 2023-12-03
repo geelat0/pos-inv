@@ -131,6 +131,6 @@ class TransactionModel extends Model
 
         return $this->whereMonth('created_at', $currentMonth)
                     ->whereYear('created_at', $currentYear)
-                    ->sum('total_profit');
+                    ->sum('total_profit') * -1;
     }
 }
