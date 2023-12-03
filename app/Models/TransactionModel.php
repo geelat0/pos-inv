@@ -53,7 +53,7 @@ class TransactionModel extends Model
         $data = $this::select(
                               DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
                               DB::raw("SUM(total_amount) as total_amount"),
-                              DB::raw("SUM(total_profit) as total_profit")
+                              DB::raw("SUM(total_profit) * -1 as total_profit")
         )
         ->groupBy('formatted_date')
         ->get();
@@ -75,7 +75,7 @@ class TransactionModel extends Model
         $data = $this::select(
                           DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
                           DB::raw("SUM(total_amount) as total_amount"),
-                          DB::raw("SUM(total_profit) as total_profit")
+                          DB::raw("SUM(total_profit) * -1 as total_profit")
         )
         ->whereDate('created_at', '>=', $fromDate)
         ->whereDate('created_at', '<=', $toDate)
@@ -85,7 +85,7 @@ class TransactionModel extends Model
     }
 
     /**
-     * Monthly Sales 
+     * Bar Graph Monthly Sales 
      *
      * @return collection
      */
@@ -101,5 +101,36 @@ class TransactionModel extends Model
                 ->groupBy('month')
                 ->get();
         return $monthlySales;
+    }
+
+    /**
+     * Monthly Sales 
+     *
+     * @return collection
+     */
+    public function getCurrentMonthSales(){
+
+        DB::statement("SET SQL_MODE=''");
+        $currentMonth = Carbon::now()->format('m');
+        $currentYear = Carbon::now()->format('Y');
+
+        return $this->whereMonth('created_at', $currentMonth)
+                    ->whereYear('created_at', $currentYear)
+                    ->sum('total_amount_with_discount');
+    }
+    /**
+     * Monthly profit 
+     *
+     * @return collection
+     */
+    public function getCurrentMonthProfit(){
+
+        DB::statement("SET SQL_MODE=''");
+        $currentMonth = Carbon::now()->format('m');
+        $currentYear = Carbon::now()->format('Y');
+
+        return $this->whereMonth('created_at', $currentMonth)
+                    ->whereYear('created_at', $currentYear)
+                    ->sum('total_profit');
     }
 }

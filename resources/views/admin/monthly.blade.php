@@ -50,8 +50,8 @@
             <div class="card monthly-sale-card" style="width: 32rem;">
               <div class="card-body">
                 <h4 class="card-title">Previous Monthly Sale</h4>
-                <h6 class="card-subtitle mb-2 text-muted">October 2023</h6>
-                <h1 style="color: #ff6c22;"><b>P</b>150000</h1>
+                <h6 class="card-subtitle mb-2 text-muted">{{ $previousMonthYear }}</h6>
+                <h1 style="color: #ff6c22;"><b>P</b>{{ number_format($previousMonthTotalSale) }}</h1>
               </div>
             </div>
           </div>
@@ -60,8 +60,8 @@
             <div class="card monthly-sale-card" style="width: 32rem;">
               <div class="card-body">
                 <h4 class="card-title">Total Sale</h4>
-                <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
-                <h1 style="color: #1d2365;"><b>P</b>155000</h1>
+                <h6 class="card-subtitle mb-2 text-muted">{{ $currentMonthYear }}</h6>
+                <h1 style="color: #1d2365;"><b>P</b>{{ number_format($currentMonthSales) }}</h1>
               </div>
             </div>
           </div>
@@ -70,8 +70,8 @@
             <div class="card monthly-sale-card" style="width: 32rem;">
               <div class="card-body">
                 <h4 class="card-title">Total Profit</h4>
-                <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
-                <h1 style="color: #12c300;"><b>P</b>15000</h1>
+                <h6 class="card-subtitle mb-2 text-muted">{{ $currentMonthYear }}</h6>
+                <h1 style="color: #12c300;"><b>P</b>{{ number_format($currentMonthProfit) }}</h1>
               </div>
             </div>
           </div>
@@ -119,9 +119,9 @@
                     <th>Total Profit</th>
                 </tr>
                 <tr>
-                    <th>Total:</th>
-                    <th>{{ $data->sum('total_amount') }}</th>
-                    <th>{{ $data->sum('total_profit') }}</th>
+                <th style="color: #12c300; font-size: 14px;">Total:</th>
+                    <th style="color: #12c300; font-size: 14px;">{{ number_format($data->sum('total_amount'), 2) }}</th>
+                    <th style="color: #12c300; font-size: 14px;">{{ number_format($data->sum('total_profit'), 2) }}</th>
                 </tr>
             </thead>
             <tbody id="tableBody">

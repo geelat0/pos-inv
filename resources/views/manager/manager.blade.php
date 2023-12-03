@@ -56,14 +56,14 @@
                       <div class="card monthly-sale-card" style="width: 100%;">
                         <div class="card-body">
                           <h4 class="card-title">Total Sale</h4>
-                          <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
+                          <h6 class="card-subtitle mb-2 text-muted">{{ $currentMonthYear }}</h6>
                           <h1 style="color: #1d2365;"><b>P</b>{{ number_format($totalSale) }}</h1>
                         </div>
                       </div>
                       <div class="card monthly-sale-card mt-3" style="width: 100%;">
                         <div class="card-body">
                           <h4 class="card-title">Total Profit</h4>
-                          <h6 class="card-subtitle mb-2 text-muted">Present Date</h6>
+                          <h6 class="card-subtitle mb-2 text-muted">{{ $currentMonthYear }}</h6>
                           <h1 style="color: #1d2365;"><b>P</b>{{ number_format($totalProfit) }}</h1>
                         </div>
                       </div>
@@ -161,8 +161,8 @@
                 </tr>
                 <tr>
                     <th style="color: #12c300; font-size: 14px;">Total:</th>
-                    <th style="color: #12c300; font-size: 14px;">{{ $data->sum('total_amount') }}</th>
-                    <th style="color: #12c300; font-size: 14px;">{{ $data->sum('total_profit') }}</th>
+                    <th style="color: #12c300; font-size: 14px;">{{ number_format($data->sum('total_amount'), 2) }}</th>
+                    <th style="color: #12c300; font-size: 14px;">{{ number_format($data->sum('total_profit'), 2) }}</th>
                 </tr>
             </thead>
             <tbody id="tableBody">

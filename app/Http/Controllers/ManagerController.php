@@ -32,6 +32,7 @@ class ManagerController extends Controller
         $itemsNeedReplenishment = (new ItemModel)->replenishment();
         $totalSale = TransactionModel::sum('total_amount_with_discount');
         $totalProfit = TransactionModel::sum('total_profit') * -1;
+        $currentMonthYear = date('F Y');
 
         //Bar Graph Backend
            $monthlySales = (new TransactionModel)->GetMonthlySales();
@@ -63,6 +64,7 @@ class ManagerController extends Controller
                                     'chartData' => $chartData, 
                                     'totalSale' => $totalSale,
                                     'totalProfit' => $totalProfit, 
+                                    'currentMonthYear' => $currentMonthYear, 
                                     'topItem' => $topItem,
                                     'topItems' => $topItems,
                                     'itemsNeedReplenishment' => $itemsNeedReplenishment,
@@ -652,6 +654,13 @@ class ManagerController extends Controller
             $data = (new TransactionModel)->FilterTransaction($request);
         }
 
+        $currentMonthSales = (new TransactionModel)->getCurrentMonthSales();
+        $currentMonthProfit = (new TransactionModel)->getCurrentMonthProfit();
+        $previousMonthTotalSale = TransactionModel::whereMonth('created_at', now()->subMonth()->month)
+        ->sum('total_amount_with_discount');
+        $previousMonthYear = now()->subMonth()->format('F Y');
+        $currentMonthYear = date('F Y');
+
         //Bar Graph Backend
            $monthlySales = (new TransactionModel)->GetMonthlySales();
         // Initialize an array to store months with data
@@ -676,7 +685,15 @@ class ManagerController extends Controller
                         'sales' => 0,
                     ];
                 }
-            }
-        return view('manager.monthly', ['data' => $data, 'monthlySales' => $monthlySales, 'chartData' => $chartData]);
+                }
+        return view('manager.monthly', ['data' => $data, 
+                                      'monthlySales' => $monthlySales, 
+                                      'chartData' => $chartData,
+                                      'currentMonthSales' => $currentMonthSales,
+                                      'currentMonthProfit' => $currentMonthProfit, 
+                                      'currentMonthYear' => $currentMonthYear, 
+                                      'previousMonthTotalSale' => $previousMonthTotalSale, 
+                                      'previousMonthYear' => $previousMonthYear, 
+                                    ]);
     }
 }
