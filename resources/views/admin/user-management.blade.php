@@ -36,6 +36,7 @@
 
 <!-- Page content-->
 <div class="container-fluid p-2">
+<h3 class="page-title">SYSTEM USERS</h3>
     @if(session('success'))
         <div class="alert alert-success">
             <p>{{ session('success') }}</p>
@@ -91,7 +92,7 @@
                     </td>
                     <td>
 
-                        <a href="view-user/{{ $user->id }}" class="btn btn-warning btn-sm" > Check Details</a>
+                        <a href="view-user/{{ $user->id }}" class="btn btn-upd-user" ><i class="bi bi-eye-fill"></i></a>
 
                         @if ($user->status === 'Active')
                             <button type="button" class="btn btn-upd-user" data-bs-toggle="modal" data-bs-target="#enable-category-modal{{ $user->id }}"><i class="bi bi-check-circle-fill"></i></button>

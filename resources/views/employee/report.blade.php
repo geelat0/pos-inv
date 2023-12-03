@@ -48,17 +48,15 @@
 
 <div class="container-fluid">
     <div class="row p-3">
-
-        <!-- FILTER DATE -->
-
-
-        <div class="col-md-3 align-self-end">
-            <button onclick="printTable()"  id="printButton" class="btn btn-primary btn-filter-date"><i class="bi bi-printer-fill">&nbsp;</i>Print Report</button>
+        <div class="col-md-12">
+            <!-- FILTER DATE -->
+            <div class="btn-group" role="group" aria-label="Basic example" style="width: 100%;">
+                <button onclick="printTable()"  id="printButton" class="btn btn-primary"><i class="bi bi-printer-fill">&nbsp;</i>Print Report</button>
+                <button onclick="extractCSV()" class="btn btn-primary"><i class="bi bi-printer-fill">&nbsp;</i>Download Report</button>
+            </div>
         </div>
-
-        <div class="col-md-3 align-self-end">
-            <button onclick="extractCSV()" class="btn btn-primary btn-filter-date"><i class="bi bi-printer-fill">&nbsp;</i>Download Report</button>
-        </div>
+    </div>
+    <div class="row p-3">
         <table id="dataTable" class="table table-hover border p-2" style="width:100%">
             <thead class="">
             <tr>
@@ -108,7 +106,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#example').DataTable();
+        $('#dataTable').DataTable();
     });
 </script>
 

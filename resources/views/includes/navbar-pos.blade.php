@@ -6,7 +6,10 @@
     <title>Bootstrap Responsive Navbar with Profile</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-    <link href="css/nav.css" rel="stylesheet" />
+   
+    <link href="{{ asset('css/pos.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/pos-nav.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/manage-user.css') }}" rel="stylesheet" />
     <style>
         body {
             padding-top: 0; /* Adjust according to your navbar height */
@@ -34,7 +37,7 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
-    <img class="nav-logo" src="assets/logo.png" alt="">&nbsp;
+    <img class="nav-logo" src="{{ asset('assets/logo.png') }}" alt="">&nbsp;
     <a class="navbar-brand" href="#">Bits & Bytes</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

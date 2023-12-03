@@ -45,6 +45,7 @@
         @include('includes.page-wrapper')
 
     <div class="container-fluid">
+    <h3 class="page-title">MONTHLY SALES</h3>
         <div class="row row-card">
           <div class="col-md-4 d-flex justify-content-center sales-card">
             <div class="card monthly-sale-card" style="width: 32rem;">

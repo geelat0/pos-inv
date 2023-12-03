@@ -67,8 +67,8 @@
 
             @if(session('void_mode'))
             <div class="alert alert-danger text-center" role="alert">
-                MANAGER LOGGED IN TO VOID
-                <a href="/employee/void-done"  class="btn-success btn ">LOGOUT</a>
+                <h4>Void Item</h4>
+                <a href="/employee/void-done"  class="btn btn-primary">logout as Manager</a>
             </div>
             @endif
 
@@ -160,7 +160,7 @@
                         </div>
 
                         <div class="col-sm-6" syle="">
-                            <button type="button" class="btn btn-primary btn-square-md" data-bs-toggle="modal" data-bs-target="#void">VOID</button>
+                            <button type="button" class="btn btn-primary btn-square-md" data-bs-toggle="modal" data-bs-target="#void" @if(session()->has('void_mode')) disabled @endif>VOID</button>
                         </div>
 
                     </div>

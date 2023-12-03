@@ -37,6 +37,7 @@
 
         <!-- Page content-->
                 <div class="container-fluid">
+                <h3 class="page-title">ITEM STOCKS</h3>
 
                     @if(session('success'))
                         <div class="alert alert-success">

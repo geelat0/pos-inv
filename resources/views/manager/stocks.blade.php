@@ -37,7 +37,7 @@
 
         <!-- Page content-->
                 <div class="container-fluid">
-
+                    <h3 class="page-title">ITEM STOCKS</h3>
                     @if(session('success'))
                         <div class="alert alert-success">
                             <p>{{ session('success') }}</p>
@@ -295,7 +295,7 @@
                                 <input type="number" class="form-control" id="" value="{{$item->no_of_stocks}}"  readonly>
                             </div>
                             <div class="mb-3">
-                                <select class="selectpicker form-control" id= "category_id" name = "category_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
+                                <select class="selectpicker form-control" value="{{ $item->category->category_name }}"  id= "category_id" name = "category_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                         <option selected="true" disabled="disabled">Select Category</option>
                                     <@foreach ($categories as $item )
                                         <option value="{{ $item->id }}">{{ $item->category_name }}</option>

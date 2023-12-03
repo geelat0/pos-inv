@@ -39,6 +39,7 @@
         @include('includes.page-wrapper')
                               <!-- Page content-->
                 <div class="container-fluid">
+                    <h3 class="page-title">RETURNED ITEMS</h3>
                             @if(session('success'))
                                 <div class="alert alert-success">
                                     <p>{{ session('success') }}</p>
@@ -67,8 +68,8 @@
                             <tbody>
                             @foreach ($return_items as $item )
                                 <tr>
-                                    <td>{{$item->purchase_date}}</td>
-                                    <td>{{$item->return_date}}</td>
+                                    <td>{{date('Y/m/d',strtotime($item->purchase_date))}}</td>
+                                    <td>{{date('Y/m/d',strtotime($item->return_date))}}</td>
                                     <td>{{$item->item->name}}</td>
                                     <td>{{$item->return_ground}}</td>
                                     <td>{{ $item->user->first_name . ' ' . $item->user->last_name }}</td>

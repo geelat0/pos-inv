@@ -459,15 +459,15 @@ class ManagerController extends Controller
         $itemId = $request->input('id');
 
         // Validate that required fields are not empty
-        if (empty($request->input('name')) ||
-        empty($request->input('supplier_price')) ||
-        empty($request->input('selling_price')) ||
-        empty($request->input('category_id')) ||
-        empty($request->input('supplier_id')) ||
-        empty($request->input('replenish'))
-        ) {
-        return redirect()->back()->with('error', 'All fields are required');
-        }
+        // if (empty($request->input('name')) ||
+        // empty($request->input('supplier_price')) ||
+        // empty($request->input('selling_price')) ||
+        // empty($request->input('category_id')) ||
+        // empty($request->input('supplier_id')) ||
+        // empty($request->input('replenish'))
+        // ) {
+        // return redirect()->back()->with('error', 'All fields are required');
+        // }
 
         $existingItemname = ItemModel::where('name', $request->input('name'))
         ->where('id', '<>', $itemId)

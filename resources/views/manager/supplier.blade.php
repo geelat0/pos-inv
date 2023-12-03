@@ -36,6 +36,7 @@
         
                 <!-- Page content-->
                 <div class="container-fluid p-2">
+                <h3 class="page-title">ITEM SUPPLIERS</h3>
                     @if(session('success'))
                         <div class="alert alert-success">
                             <p>{{ session('success') }}</p>

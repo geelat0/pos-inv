@@ -39,6 +39,7 @@
         @include('includes.page-wrapper')
                               <!-- Page content-->
                 <div class="container-fluid">
+                    <h3 class="page-title">RETURNED ITEMS</h3>
                             @if(session('success'))
                                 <div class="alert alert-success">
                                     <p>{{ session('success') }}</p>

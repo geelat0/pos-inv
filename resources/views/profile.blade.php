@@ -70,14 +70,10 @@
 
 
 
-        <div class="col-md-12 d-flex justify-content-center  align-items-center ">
-
-
-
-
-            <a href="/{{ Auth::user()->user_role == 1 ? 'admin' : (Auth::user()->user_role == 2 ? 'manager' : 'employee') }}"  class="btn btn-success btn-sm" style="width: 200px;">RETURN</a>
-
+        <div class="col-md-12 d-flex justify-content-start  align-items-center ">
+            <a href="/{{ Auth::user()->user_role == 1 ? 'admin' : (Auth::user()->user_role == 2 ? 'manager' : 'employee') }}"  class="btn"><i class="bi bi-arrow-left-circle-fill" style="font-size: 24px; color:#2b3499;">&nbsp;</i>Return</a>
         </div>
+
         <div class="col-md-12 d-flex justify-content-center">
             <img class="profile-img" src="{{ asset('assets/profile.png') }}" alt="dsad" style="width: 20%;">
         </div>
