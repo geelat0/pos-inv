@@ -781,11 +781,34 @@
                         console.log('Data success:', data.success);
 
 
-                        if(data.data){
-                            renderOrder(data.data)
-                        }else{
-                            alert(data.message);
+                        if(data.message){
+                            alert(data.message)
                         }
+
+                        if (data && data.data && data.data.length > 0) {
+                            // The "data" array has values and is not empty
+                            // You can access the data inside the array like data.data[0].id, data.data[0].quantity, etc.
+                            renderOrder(data.data)
+                        }
+
+
+
+                        //
+                        // if(data.data){
+                        //     renderOrder(data.data)
+                        // }else{
+                        //     alert(data.message);
+                        // }
+                        //
+                        //
+                        //
+                        //
+                        //
+                        // if(data.data){
+                        //     renderOrder(data.data)
+                        // }else{
+                        //     alert(data.message);
+                        // }
 
 
 
