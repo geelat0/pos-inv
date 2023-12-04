@@ -509,6 +509,28 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Item updated successfully');
     }
 
+    /**
+     * Search Category based on input
+     */
+    public function searchCat(Request $request)
+    {
+        $items = (new CategoryModel)->queryItem($request);
+        return response()->json($items);
+
+       
+    }
+
+    /**
+     * Search Supplier based on input
+     */
+    public function searchSupplier(Request $request)
+    {
+        $items = (new SupplierModel)->queryItem($request);
+        return response()->json($items);
+
+       
+    }
+
 
     /*
     |--------------------------------------------------------------------------

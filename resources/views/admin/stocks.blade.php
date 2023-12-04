@@ -289,43 +289,37 @@
                         <form id="new-category" action="/admin/update_item" method="post">
                         @csrf
                         @method('post')
-                                <input type="hidden" name="id" value="{{ $item->id }}">
+                            <input type="hidden" name="id" value="{{ $item->id }}">
                             <div class="mb-3">
                                 <label for="">Item Name</label>
                                 <input type="text" class="form-control" id="name" name="name" value="{{ $item->name }}" placeholder="Update name">
                             </div>
                             <div class="mb-3">
                                 <label for="">Item Quantity</label>
-                                <input type="number" class="form-control" id="" value="{{$item->no_of_stocks}}"  readonly>
+                                <input type="number" class="form-control" id="" value="{{$item->no_of_stocks}}"  readonly disabled>
                             </div>
                             <div class="mb-3">
-                                <select class="selectpicker form-control" id= "category_id" name = "category_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
-                                        <option selected="true" disabled="disabled">Select Category</option>
-                                    <@foreach ($categories as $item )
-                                        <option value="{{ $item->id }}">{{ $item->category_name }}</option>
-                                    @endforeach
-                                    <!-- Add more options as needed -->
-                                </select>
+                                <input type="text" class="form-control" value="{{$item->supplier_price}}" id="supplier_price" name="supplier_price"  placeholder="Update Buying Price">
                             </div>
                             <div class="mb-3">
-                                <select class="selectpicker form-control" id= "supplier_id" name= "supplier_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
-                                    <option selected="true" disabled="disabled">Select Supplier</option>
-                                    @foreach ($suppliers as $item )
-                                        <option value="{{ $item->id }}">{{ $item->supplier_name }}</option>
-                                    @endforeach
-                                    <!-- Add more options as needed -->
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control" id="supplier_price" name="supplier_price"  placeholder="Update Buying Price">
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control" id="supplier_price"  name="selling_price" placeholder="Update Selling Price">
+                                <input type="text" class="form-control" value="{{$item->selling_price}}" id="selling_price"  name="selling_price" placeholder="Update Selling Price">
                             </div>
                             <div class="mb-3">
                                 <label for="">Replenishment Threshold</label>
-                                <input type="number" class="form-control" id="replenish" name="replenish" placeholder="Update replenishment threshold">
+                                <input type="number" class="form-control" id="replenish" value="{{$item->replenish}}" name="replenish" placeholder="Update replenishment threshold">
                             </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="item-search" value="{{$item->category->category_name}}" name = "query" placeholder="Search Category...">
+                                    <ul class="list-group" id="item-list">
+                                    </ul>
+                                <input type="hidden" name="category_id" value="{{$item->category_id}}" id="selected-item-id">
+                            </div> 
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="supplier-search" value="{{$item->supplier->supplier_name}}" name = "query" placeholder="Search Supplier...">
+                                    <ul class="list-group" id="supplier-list">
+                                    </ul>
+                                <input type="hidden" name="supplier_id" value="{{$item->supplier_id}}" id="selected-supplier-id">
+                            </div> 
                         </div>
                     </div>
                         <!-- Modal Footer (optional) -->
@@ -447,6 +441,78 @@
                         });
                     });
                 });
+        </script>
+         <script>
+            $(document).ready(function () {
+                $('#item-search').on('input', function () {
+                    var searchTerm = $(this).val();
+
+                    $.ajax({
+                        url: '/admin/searchCat',
+                        type: 'GET',
+                        data: {term: searchTerm},
+                        success: function (response) {
+                            displayItems(response);
+                        }
+                    });
+                });
+
+                function displayItems(items) {
+                    var itemList = $('#item-list');
+                    itemList.empty();
+
+                    items.forEach(function (item) {
+                        // Only display items whose names start with the inputted term
+                        if (item.category_name.toLowerCase().startsWith($('#item-search').val().toLowerCase())) {
+                            var listItem = $('<li class="list-group-item" style="color: #000;">')
+                                .text(item.category_name)
+                                .click(function () {
+                                    $('#item-search').val(item.category_name);
+                                    $('#selected-item-id').val(item.id);
+                                    itemList.empty();
+                                });
+
+                            itemList.append(listItem);
+                        }
+                    });
+                }
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('#supplier-search').on('input', function () {
+                    var searchTerm = $(this).val();
+
+                    $.ajax({
+                        url: '/admin/searchSupplier',
+                        type: 'GET',
+                        data: {term: searchTerm},
+                        success: function (response) {
+                            displayItems(response);
+                        }
+                    });
+                });
+
+                function displayItems(items) {
+                    var itemList = $('#supplier-list');
+                    itemList.empty();
+
+                    items.forEach(function (item) {
+                        // Only display items whose names start with the inputted term
+                        if (item.supplier_name.toLowerCase().startsWith($('#supplier-search').val().toLowerCase())) {
+                            var listItem = $('<li class="list-group-item" style="color: #000;">')
+                                .text(item.supplier_name)
+                                .click(function () {
+                                    $('#supplier-search').val(item.supplier_name);
+                                    $('#selected-supplier-id').val(item.id);
+                                    itemList.empty();
+                                });
+
+                            itemList.append(listItem);
+                        }
+                    });
+                }
+            });
         </script>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

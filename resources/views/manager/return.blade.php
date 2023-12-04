@@ -148,7 +148,7 @@
                                 <ul class="list-group" id="item-list">
                                 </ul>
                             <input type="hidden" name="item_id" id="selected-item-id">
-                          </div>
+                          </div> 
                           <div class="mb-3">
                               <select class="selectpicker form-control" name="user_id" data-live-search="true" data-style="btn-primary" data-width="200px" required>
                                   <option selected="true" disabled="disabled">Purchased To</option>

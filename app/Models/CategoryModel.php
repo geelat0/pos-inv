@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CategoryModel extends Model
 {
@@ -26,6 +28,14 @@ class CategoryModel extends Model
     {
         return $this::where('status', 'Active')->get();
     }
-
     
+    public function queryItem(Request $request)
+    {
+        $query = $request->get('query');
+        DB::statement("SET SQL_MODE=''");
+        return $this::where('category_name', 'like', "%$query%")
+                            ->where('status', 'Active')
+                            ->groupby('category_name')
+                            ->get();
+    }   
 }

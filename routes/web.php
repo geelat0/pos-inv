@@ -68,6 +68,8 @@ Route::group([
     Route::post('/stock-status', [AdminController::class, 'StockStatus']);
     Route::post('/item-status', [AdminController::class, 'ItemStatus']);
     Route::post('/update_item', [AdminController::class, 'updateStocks']);
+    Route::get('/searchCat', [AdminController::class, 'searchCat']);
+    Route::get('/searchSupplier', [AdminController::class, 'searchSupplier']);
 
     // Return Item Module
     Route::get('/return', [AdminController::class, 'return']);
@@ -116,6 +118,8 @@ Route::group([
     Route::post('/stock-status', [ManagerController::class, 'StockStatus']);
     Route::post('/item-status', [ManagerController::class, 'ItemStatus']);
     Route::post('/update_item', [ManagerController::class, 'updateStocks']);
+    Route::get('/searchCat', [ManagerController::class, 'searchCat']);
+    Route::get('/searchSupplier', [ManagerController::class, 'searchSupplier']);
 
     // Return Item Module
     Route::get('/return', [ManagerController::class, 'return']);

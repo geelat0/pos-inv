@@ -459,15 +459,15 @@ class ManagerController extends Controller
         $itemId = $request->input('id');
 
         // Validate that required fields are not empty
-        // if (empty($request->input('name')) ||
-        // empty($request->input('supplier_price')) ||
-        // empty($request->input('selling_price')) ||
-        // empty($request->input('category_id')) ||
-        // empty($request->input('supplier_id')) ||
-        // empty($request->input('replenish'))
-        // ) {
-        // return redirect()->back()->with('error', 'All fields are required');
-        // }
+        if (empty($request->input('name')) ||
+        empty($request->input('supplier_price')) ||
+        empty($request->input('selling_price')) ||
+        empty($request->input('category_id')) ||
+        empty($request->input('supplier_id')) ||
+        empty($request->input('replenish'))
+        ) {
+        return redirect()->back()->with('error', 'All fields are required');
+        }
 
         $existingItemname = ItemModel::where('name', $request->input('name'))
         ->where('id', '<>', $itemId)
@@ -503,6 +503,28 @@ class ManagerController extends Controller
         }
 
         return redirect()->back()->with('success', 'Item updated successfully');
+    }
+
+    /**
+     * Search Category based on input
+     */
+    public function searchCat(Request $request)
+    {
+        $items = (new CategoryModel)->queryItem($request);
+        return response()->json($items);
+
+       
+    }
+
+    /**
+     * Search Supplier based on input
+     */
+    public function searchSupplier(Request $request)
+    {
+        $items = (new SupplierModel)->queryItem($request);
+        return response()->json($items);
+
+       
     }
 
 
@@ -630,7 +652,7 @@ class ManagerController extends Controller
         return redirect()->back()->with('success', 'Item deleted successfully.');
     }
 
-     /**
+    /**
      * Search Item based on input
      */
     public function search(Request $request)
@@ -638,6 +660,7 @@ class ManagerController extends Controller
         $items = (new ItemModel)->queryItem($request);
         return response()->json($items);
     }
+
 
     /*
     |--------------------------------------------------------------------------
