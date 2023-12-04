@@ -308,13 +308,13 @@
                                 <input type="text" class="form-control" id="item-search{{ $item->id }}" value="{{ $item->category->category_name }}" name="query" placeholder="Search Category...">
                                     <ul class="list-group" id="item-list{{ $item->id }}">
                                     </ul>
-                                <input type="" name="category_id" value="{{ $item->category_id }}" id="selected-item-id{{ $item->id }}">
+                                <input type="hidden" name="category_id" value="{{ $item->category_id }}" id="selected-item-id{{ $item->id }}">
                             </div> 
                             <div class="mb-3">
                                 <input type="text" class="form-control" id="supplier-search{{ $item->id }}" value="{{$item->supplier->supplier_name}}" name = "query" placeholder="Search Supplier...">
                                     <ul class="list-group" id="supplier-list{{ $item->id }}">
                                     </ul>
-                                <input type="" name="supplier_id" value="{{$item->supplier_id}}" id="selected-supplier-id{{ $item->id }}">
+                                <input type="hidden" name="supplier_id" value="{{$item->supplier_id}}" id="selected-supplier-id{{ $item->id }}">
                             </div> 
                            
                         </div>
