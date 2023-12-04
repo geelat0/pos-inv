@@ -305,16 +305,16 @@
                                 <input type="number" class="form-control" id="replenish" value="{{$item->replenish}}" name="replenish" placeholder="Update replenishment threshold">
                             </div>
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="item-search" value="{{$item->category->category_name}}" name = "query" placeholder="Search Category...">
-                                    <ul class="list-group" id="item-list">
+                                <input type="text" class="form-control" id="item-search{{ $item->id }}" value="{{ $item->category->category_name }}" name="query" placeholder="Search Category...">
+                                    <ul class="list-group" id="item-list{{ $item->id }}">
                                     </ul>
-                                <input type="hidden" name="category_id" value="{{$item->category_id}}" id="selected-item-id">
+                                <input type="" name="category_id" value="{{ $item->category_id }}" id="selected-item-id{{ $item->id }}">
                             </div> 
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="supplier-search" value="{{$item->supplier->supplier_name}}" name = "query" placeholder="Search Supplier...">
-                                    <ul class="list-group" id="supplier-list">
+                                <input type="text" class="form-control" id="supplier-search{{ $item->id }}" value="{{$item->supplier->supplier_name}}" name = "query" placeholder="Search Supplier...">
+                                    <ul class="list-group" id="supplier-list{{ $item->id }}">
                                     </ul>
-                                <input type="hidden" name="supplier_id" value="{{$item->supplier_id}}" id="selected-supplier-id">
+                                <input type="" name="supplier_id" value="{{$item->supplier_id}}" id="selected-supplier-id{{ $item->id }}">
                             </div> 
                            
                         </div>
@@ -440,78 +440,81 @@
                 });
         </script>
 
+    @foreach($items as $item)
         <script>
             $(document).ready(function () {
-                $('#item-search').on('input', function () {
+                $('#item-search{{ $item->id }}').on('input', function () {
                     var searchTerm = $(this).val();
 
                     $.ajax({
                         url: '/manager/searchCat',
                         type: 'GET',
-                        data: {term: searchTerm},
+                        data: { term: searchTerm },
                         success: function (response) {
-                            displayItems(response);
+                            displayItems(response, '#item-search{{ $item->id }}', '#item-list{{ $item->id }}', '#selected-item-id{{ $item->id }}');
                         }
                     });
                 });
 
-                function displayItems(items) {
-                    var itemList = $('#item-list');
+                function displayItems(items, inputId, listId, selectedIdInput) {
+                    var itemList = $(listId);
                     itemList.empty();
 
                     items.forEach(function (item) {
-                        // Only display items whose names start with the inputted term
-                        if (item.category_name.toLowerCase().startsWith($('#item-search').val().toLowerCase())) {
-                            var listItem = $('<li class="list-group-item" style="color: #000;">')
-                                .text(item.category_name)
-                                .click(function () {
-                                    $('#item-search').val(item.category_name);
-                                    $('#selected-item-id').val(item.id);
-                                    itemList.empty();
-                                });
+                        if (item.category_name.toLowerCase().startsWith($('#item-search{{ $item->id }}').val().toLowerCase())) {
+                        var listItem = $('<li class="list-group-item" style="color: #000;">')
+                            .text(item.category_name)
+                            .click(function () {
+                                $(inputId).val(item.category_name);
+                                $(selectedIdInput).val(item.id);
+                                itemList.empty();
+                            });
 
-                            itemList.append(listItem);
+                        itemList.append(listItem);
                         }
                     });
                 }
             });
         </script>
+    @endforeach
+    @foreach($items as $item)
         <script>
             $(document).ready(function () {
-                $('#supplier-search').on('input', function () {
+                $('#supplier-search{{ $item->id }}').on('input', function () {
                     var searchTerm = $(this).val();
 
                     $.ajax({
                         url: '/manager/searchSupplier',
                         type: 'GET',
-                        data: {term: searchTerm},
+                        data: { term: searchTerm },
                         success: function (response) {
-                            displayItems(response);
+                            displaySuppliers(response, '#supplier-search{{ $item->id }}', '#supplier-list{{ $item->id }}', '#selected-supplier-id{{ $item->id }}');
                         }
                     });
                 });
 
-                function displayItems(items) {
-                    var itemList = $('#supplier-list');
+                function displaySuppliers(items, inputId, listId, selectedIdInput) {
+                    var itemList = $(listId);
                     itemList.empty();
 
                     items.forEach(function (item) {
-                        // Only display items whose names start with the inputted term
-                        if (item.supplier_name.toLowerCase().startsWith($('#supplier-search').val().toLowerCase())) {
-                            var listItem = $('<li class="list-group-item" style="color: #000;">')
-                                .text(item.supplier_name)
-                                .click(function () {
-                                    $('#supplier-search').val(item.supplier_name);
-                                    $('#selected-supplier-id').val(item.id);
-                                    itemList.empty();
-                                });
+                        if (item.supplier_name.toLowerCase().startsWith($('#supplier-search{{ $item->id }}').val().toLowerCase())) {
+                        var listItem = $('<li class="list-group-item" style="color: #000;">')
+                            .text(item.supplier_name)
+                            .click(function () {
+                                $(inputId).val(item.supplier_name);
+                                $(selectedIdInput).val(item.id);
+                                itemList.empty();
+                            });
 
-                            itemList.append(listItem);
+                        itemList.append(listItem);
                         }
                     });
                 }
             });
         </script>
+    @endforeach
+
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
