@@ -15,8 +15,7 @@ class UserManagementController extends Controller
     public function index()
     {
 
-
-        $users = User::all();
+        $users = User::where('user_role', '!=', 1)->get();
         return view('admin.user-management', ['users'=> $users]);
     }
 
@@ -115,5 +114,25 @@ class UserManagementController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public  function  updateStatus(Request $request){
+
+        $id = $request->input('id');
+        $newStatus = $request->input('new_status');
+
+        // Find the category by its ID
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
+        // Update the category status
+        $user->status = $newStatus;
+        $user->save();
+
+        return redirect()->back()->with('success', 'User status updated successfully.');
+
     }
 }

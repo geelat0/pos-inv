@@ -84,6 +84,7 @@ Route::group([
     Route::post('/update-user/{user}', [UserManagementController::class, 'update']);
     Route::post('/update-user-password/{user}', [UserManagementController::class, 'changePassword']);
     Route::get('/view-user/{user}', [UserManagementController::class, 'show'])->name('viewUser');
+    Route::post('/user-status', [UserManagementController::class, 'updateStatus'])->name('updateStatus');
 
     Route::get('/monthly', [AdminController::class, 'monthly']);
 
