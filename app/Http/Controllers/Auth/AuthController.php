@@ -45,15 +45,24 @@ class AuthController extends Controller
         if (auth()->attempt($credentials)) {
 
 
-            $loginS = new LoginModel();
-            $loginS->date_time_in = now();
-            $loginS->status = 'Logged In';
-            // Associate the post with the authenticated user
-            $loginS->user_id =  Auth::id();
-            $loginS->save();
+            // Check if the user status is 'Active'
+            if (auth()->user()->status == 'Active') {
+                $loginS = new LoginModel();
+                $loginS->date_time_in = now();
+                $loginS->status = 'Logged In';
+                // Associate the post with the authenticated user
+                $loginS->user_id =  Auth::id();
+                $loginS->save();
+
+                return redirect()->intended($this->redirectTo);
+            } else {
+                // User status is not 'Active', logout and show an error message
+                auth()->logout();
+                return back()->withInput($request->only('email'))->withErrors(['email' => 'Your account is not active , Please contact the Admin.']);
+            }
 
 
-            return redirect()->intended($this->redirectTo);
+
         }
 
         return back()->withInput($request->only('email'))->withErrors(['email' => 'Invalid  Username or Password ']);

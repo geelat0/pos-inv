@@ -197,6 +197,36 @@
 
 
 
+@foreach($users as $user)
+    <div class="modal" id="enable-category-modal{{ $user->id }}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <div>
+                        <h5 class="d-flex justify-content-center">Are you sure you want to {{ $user->status === 'Active' ? 'Disable' : 'Enable' }} this user?</h5>
+                    </div>
+                </div>
+                <!-- Modal Footer (optional) -->
+                <form method="post" action="/admin/user-status">
+                    @csrf
+                    <div class="modal-footer d-flex justify-content-center border-0">
+                        <input type="hidden" name="new_status" value="{{ $user->status === 'Active' ? 'Inactive' : 'Active' }}">
+                        <input type="hidden" name="id" value="{{ $user->id }}">
+                        <button type="submit" class="btn btn-dark" style="width: 20%;">Yes</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="width: 40%;">No</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endforeach
+
+
 
 <!-- UPDATE CATEGORY MODAL -->
 
