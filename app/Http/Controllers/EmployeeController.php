@@ -133,12 +133,10 @@ class EmployeeController extends Controller
 
         $cart->save();
         $all =  CartModel::with('item')->where('user_id',Auth::id())->get();
+        
 
-        return response()->json([
-            'success' => true,
-            'message' => '',
-//            'data' => $all
-        ] );
+        return response()->json(['data' => $all], 201);
+
     }
 
 
