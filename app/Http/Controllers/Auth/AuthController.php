@@ -14,6 +14,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+use App\Models\Sched;
 
 class AuthController extends Controller
 {
@@ -43,6 +45,43 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials)) {
+
+
+
+            if (auth()->user()->status == 'Active'  && auth()->user()->user_role ==3) {
+
+                // Get the current day of the week (1 to 7, where 1 represents Monday)
+                $currentDayOfWeek = Carbon::now()->dayOfWeekIso;
+
+
+
+
+                // Check if the user has a schedule for the current day
+                $scheduleColumnName = "sched_$currentDayOfWeek";
+                $schedule = Sched::where('user_id', Auth::id())->first();
+
+                if ($schedule && $schedule->$scheduleColumnName) {
+
+
+
+                    $loginS = new LoginModel();
+                    $loginS->date_time_in = now();
+                    $loginS->status = 'Logged In';
+                    // Associate the post with the authenticated user
+                    $loginS->user_id =  Auth::id();
+                    $loginS->save();
+
+                    return redirect()->intended($this->redirectTo);
+
+                }
+
+                // pag wala
+
+                auth()->logout();
+                return back()->withInput($request->only('email'))->withErrors(['email' => 'Your dont have access today.']);
+
+            }
+
 
 
             // Check if the user status is 'Active'

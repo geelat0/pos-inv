@@ -87,7 +87,6 @@ Route::group([
     Route::post('/user-status', [UserManagementController::class, 'updateStatus'])->name('updateStatus');
 
     Route::get('/monthly', [AdminController::class, 'monthly']);
-
 });
 
 //  manager
@@ -132,10 +131,19 @@ Route::group([
     Route::get('/monthly', [ManagerController::class, 'monthly']);
 
 
+    // user management manager
+    Route::get('/user-management', [\App\Http\Controllers\ManagerUserManagementController::class, 'index']);
+    Route::post('/store-user', [\App\Http\Controllers\ManagerUserManagementController::class, 'store']);
+    Route::post('/update-user/{user}', [\App\Http\Controllers\ManagerUserManagementController::class, 'update']);
+    Route::post('/update-user-password/{user}', [\App\Http\Controllers\ManagerUserManagementController::class, 'changePassword']);
+    Route::get('/view-user/{user}', [\App\Http\Controllers\ManagerUserManagementController::class, 'show'])->name('viewUser');
+    Route::get('/view-sched/{user}', [\App\Http\Controllers\ManagerUserManagementController::class, 'showSched'])->name('viewSched');
+    Route::post('/user-status', [\App\Http\Controllers\ManagerUserManagementController::class, 'updateStatus'])->name('updateStatus');
+    Route::post('/update-sched', [\App\Http\Controllers\ManagerUserManagementController::class, 'updateSched'])->name('updateSched');
 });
 //  employee
 Route::group([
-//    'middleware' => ['auth', ',employee'],
+    //    'middleware' => ['auth', ',employee'],
     'prefix' => 'employee',
     'as' => 'employee.',
 ], function () {
@@ -154,14 +162,7 @@ Route::group([
     Route::post('/void-item', [\App\Http\Controllers\EmployeeController::class, 'voidItem']);
     Route::get('/void-done', [\App\Http\Controllers\EmployeeController::class, 'voidDone']);
     Route::post('/pay-now', [\App\Http\Controllers\EmployeeController::class, 'payNow']);
-
-
 });
 
 
 Route::get('/scanner', [\App\Http\Controllers\EmployeeController::class, 'index']);
-
-
-
-
-

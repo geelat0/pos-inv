@@ -21,7 +21,11 @@ class EmployeeController extends Controller
 
 
         // Destroy the 'void_mode' session variable
-        $cart = CartModel::with('item')->where('user_id', Auth::id())->get();
+        $cart = CartModel::with('item')
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
 
         return view('employee.home', compact('cart'));
 
@@ -134,11 +138,8 @@ class EmployeeController extends Controller
         $cart->save();
         $all =  CartModel::with('item')->where('user_id',Auth::id())->get();
 
-        return response()->json([
-            'success' => true,
-            'message' => '',
-//            'data' => $all
-        ] );
+        return response()->json(['data' => $all], 201);
+
     }
 
 
