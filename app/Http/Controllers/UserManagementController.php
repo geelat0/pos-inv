@@ -6,7 +6,7 @@ use App\Models\CategoryModel;
 use App\Models\LoginModel;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use App\Models\Sched;
 class UserManagementController extends Controller
 {
     /**
@@ -33,6 +33,7 @@ class UserManagementController extends Controller
     public function store(Request $request)
     {
 
+
         $data = $request->validate([
             'first_name' => 'required' ,
             'middle_name' => 'required' ,
@@ -45,7 +46,26 @@ class UserManagementController extends Controller
             'password_confirmation' => 'required'
         ]);
 
-        User::create($data);
+        $newUser = User::create($data);
+
+
+        if($request->user_role == 3){
+            Sched::create([
+                'user_id' => $newUser->id,
+                'sched_1' => 1,
+                'sched_2' => 1,
+                'sched_3' => 1,
+                'sched_4' => 1,
+                'sched_5' => 1,
+                'sched_6' => 1,
+                'sched_7' => 1,
+                'created_at' =>now(),
+                'updated_at' =>now(),
+            ]);
+
+        }
+
+
 
         return redirect()->back()->with('success', 'USer added successfully');
     }

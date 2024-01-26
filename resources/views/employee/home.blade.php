@@ -45,6 +45,11 @@
     </style>
 
 
+    <style>
+        #myAudio {
+            display: none;
+        }
+    </style>
 
     <link href="{{ asset('css/pos.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/pos-nav.css') }}" rel="stylesheet" />
@@ -59,6 +64,12 @@
 
 
 @include('includes.navbar-pos')
+
+
+<audio id="myAudio" controls>
+    <source src="{{ asset('assets/check.mp3') }}" type="audio/mp3">
+    Your browser does not support the audio element.
+</audio>
 
 
 <div class="container-fluid" style="">
@@ -550,7 +561,7 @@
             // row.append('<td class="text-uppercase"> <button class="btn btn-sm btn-danger  btn-void "   data-id="' + item.id + '">Remove</button></td>');
 
             // Append the row to the result-container
-            $('#order-table').append(row);
+            $('#order-table').prepend(row);
 
         });
 
@@ -572,6 +583,10 @@
         $('.quantity-input').on('change', function() {
             // Get the new value when the input changes
             var new_quantity = $(this).val();
+
+
+
+
 
             // Get the item ID from the data-id attribute
             var id = $(this).data('id');
@@ -611,6 +626,7 @@
                         $('#modal-total').val(to_add.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ''));
 
                         renderOrder(response.data)
+                        $("#myAudio")[0].play();
                     }else{
                         alert(response.message);
                     }
@@ -700,6 +716,7 @@
 
                                 if(data.data){
                                     renderOrder(data.data)
+                                    $("#myAudio")[0].play();
                                 }else{
                                     alert(data.message);
                                 }
@@ -789,6 +806,7 @@
                             // The "data" array has values and is not empty
                             // You can access the data inside the array like data.data[0].id, data.data[0].quantity, etc.
                             renderOrder(data.data)
+                            $("#myAudio")[0].play();
                         }
 
 
