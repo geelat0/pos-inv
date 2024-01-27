@@ -77,6 +77,7 @@
                     <h2 class="card-title" style="font-weight: bold; color: #ffd099;">TOP 1 ITEM!</h2>
                     <h4 class="card-title" style=" color: #ffd099;">{{ $topItem->item->name }}</h4>
                     <p style="color: #ffd099;">{{ $topItem->item->category->category_name }}</p>
+                    <p style="color: #ffd099;">QTY SOLD: {{ $topItem->totalQuantity }}</p>
                   </div>
                 @else
                     <p>No top-selling item found.</p>
@@ -88,6 +89,7 @@
                             <th>Rank#</th>
                             <th>Item</th>
                             <th>Category</th>
+                            <th>Total Qty Sold</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,6 +98,7 @@
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $items->item->name }}</td>
                             <td>{{ $items->item->category->category_name }}</td>
+                            <td>{{ $items->totalQuantity }}</td>
                         </tr>
                     @endforeach
                 </table>

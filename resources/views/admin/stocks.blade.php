@@ -155,6 +155,7 @@
                     <div class="row row-add-user d-flex justify-content-end flex-row">
                         <!-- <button type="button" class="btn btn-stock" data-bs-toggle="modal" data-bs-target="#new-item">New Item</button> -->
                         <button type="button" class="btn btn-stock" data-bs-toggle="modal" data-bs-target="#restock">Restock</button>
+                        <button type="button" onclick="printTable()" id="printButton" class="btn btn-stock" ><i class="bi bi-printer-fill">&nbsp;</i>Print Report</button> 
                     </div>
 
                     <!-- DISPLAY ITEM -->
@@ -518,6 +519,35 @@
             });
         </script>
     @endforeach
+
+
+     <!-- PRINTING SCRIPT -->
+     <script>window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>')</script>
+     <script>
+        function printTable() {
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>STOCKS PER ITEM</title></head><body>');
+            printWindow.document.write('<style>@media print{table{border-collapse: collapse;width: 100%;}table, th, td{border: 1px solid black;}th, td{padding: 8px;text-align: left;}}</style>');
+            
+            // Extracting the first six columns from the original table
+            var originalTable = document.querySelector('table');
+            var clonedTable = originalTable.cloneNode(true);
+            var rows = clonedTable.querySelectorAll('tr');
+            
+            // Remove the last three columns from each row
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].querySelectorAll('th, td');
+                for (var j = cells.length - 1; j >= 6; j--) {
+                    cells[j].parentNode.removeChild(cells[j]);
+                }
+            }
+
+            printWindow.document.write(clonedTable.outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
