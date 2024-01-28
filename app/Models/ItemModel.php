@@ -83,5 +83,18 @@ class ItemModel extends Model
         ->orderByDesc('totalQuantity')
         ->take(5)->get();
     }
+
+    public function getOrderItem()
+    {
+        DB::statement("SET SQL_MODE=''");
+        return OrderModel::with('item')
+        ->select(
+            'item_id', 
+            DB::raw('SUM(quantity) as totalQuantity'), 
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"))
+        ->groupBy('item_id', 'created_at')
+        ->orderBy('created_at', 'desc')
+        ->get();
+    }
     
 }

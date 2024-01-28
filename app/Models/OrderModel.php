@@ -28,4 +28,22 @@ class OrderModel extends Model
     {
         return $this->belongsTo(Item::class, 'item_id');
     }
+
+    /**
+     * Get all Transaction
+     *
+     * @return collection
+     */
+    public function getAllTransaction(){
+        DB::statement("SET SQL_MODE=''");
+        $data = TransactionModel::select(
+                              DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
+                              DB::raw("SUM(total_amount) as total_amount"),
+                              DB::raw("SUM(total_profit) * -1 as total_profit")
+        )
+        ->groupBy('formatted_date')
+        ->get();
+
+        return $data;
+    }
 }
