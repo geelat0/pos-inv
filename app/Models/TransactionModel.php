@@ -84,6 +84,28 @@ class TransactionModel extends Model
         return $data;
     }
 
+    public function FilterQuantitySold(Request $request)
+    {
+        $fromDate = $request->input('startdate');
+        $toDate = $request->input('enddate');
+        $toDate = Carbon::parse($toDate)->endOfDay();
+
+        // Modify the following code based on your OrderItemModel structure
+        $Orders = OrderModel::with('item')
+        ->select(
+            'item_id', 
+            DB::raw('SUM(quantity) as totalQuantity'), 
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') as formatted_date"),
+        )
+        ->whereDate('created_at', '>=', $fromDate)
+        ->whereDate('created_at', '<=', $toDate)
+        ->groupBy('item_id', 'formatted_date')
+        ->get();
+
+        return $Orders;
+    }
+
     /**
      * Bar Graph Monthly Sales 
      *

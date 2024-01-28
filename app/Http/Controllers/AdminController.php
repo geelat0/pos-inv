@@ -29,6 +29,14 @@ class AdminController extends Controller
         if ($request->has('start_date') && $request->has('end_date')) {
             // Filter data based on the date range
             $data = (new TransactionModel)->FilterTransaction($request);
+            $OrderItems = (new TransactionModel)->FilterQuantitySold($request);
+        }
+
+        $OrderItems  = (new ItemModel)->getOrderItem();
+
+        if ($request->has('startdate') && $request->has('enddate')) {
+            // Filter data based on the date range
+            $OrderItems = (new TransactionModel)->FilterQuantitySold($request);
         }
 
         $topItem = (new ItemModel)->getTopItem();
@@ -72,6 +80,7 @@ class AdminController extends Controller
                                     'topItem' => $topItem,
                                     'topItems' => $topItems,
                                     'itemsNeedReplenishment' => $itemsNeedReplenishment,
+                                    'OrderItems' => $OrderItems,
                                 ]);
     }
 

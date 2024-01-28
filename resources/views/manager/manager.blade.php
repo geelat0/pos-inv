@@ -187,6 +187,57 @@
       </div>
     </div>
 
+    
+    <div class="container-fluid">
+      <div class="row p-3">
+
+        <!-- FILTER DATE -->
+        <form id="filterForm"  action="/manager/"  method="get">
+        @csrf
+          <div class="row" style="margin-bottom: 10px;">
+              <h4>Quantity Sold per Item</h4>
+              <div class="col-md-2">
+                  <label for="start-date">Start Date:</label>
+                  <input type="text" name="startdate" id="startdate" class="form-control" autocomplete="off">
+              </div>
+              <div class="col-md-2 col-end-date">
+                  <label for="end-date">End Date:</label>
+                  <input type="text" name="enddate"   id="enddate" class="form-control" autocomplete="off">
+              </div>
+              <div class="col-md-2">
+                  <label for="end-date">Filter Date:</label>
+                  <button class="form-control btn btn-primary" type="submit">Filter</button>
+              </div>
+          </div>
+        </form>
+
+        <table id="StocksTable" class="table table-hover border p-2" style="width:100%">
+            <thead class="">
+                <tr>
+                    <th>Item</th>
+                    <th>Category</th>
+                    <th>Qty Sold</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            @forelse($OrderItems as $items)
+                <tr>
+                    <td>{{ $items->item->name }}</td>
+                    <td>{{ $items->item->category->category_name }}</td>
+                    <td>{{ $items->totalQuantity }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="number_of_columns">No data found</td>
+                </tr>
+            @endforelse
+            </tbody>
+
+            
+        </table>
+      </div>
+    </div>
+
      <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> -->
      <script>window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>')</script>
      <script src="http://code.highcharts.com/highcharts.js"></script>
@@ -256,6 +307,21 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function(){
+            // Initialize datepicker for the start date
+            $('#startdate').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+
+            // Initialize datepicker for the end date
+            $('#enddate').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+        });
+    </script>
 
 
 <!-- ------------------------------------------------------- -->
@@ -270,6 +336,12 @@
         <script>
             $(document).ready(function() {
                 $('#dataTable').DataTable();
+            });
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                $('#StocksTable').DataTable();
             });
         </script>
 

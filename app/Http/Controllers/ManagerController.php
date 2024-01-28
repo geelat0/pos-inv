@@ -27,6 +27,14 @@ class ManagerController extends Controller
             $data = (new TransactionModel)->FilterTransaction($request);
         }
 
+        $OrderItems  = (new ItemModel)->getOrderItem();
+
+        if ($request->has('startdate') && $request->has('enddate')) {
+            // Filter data based on the date range
+            $OrderItems = (new TransactionModel)->FilterQuantitySold($request);
+        }
+
+
         $topItem = (new ItemModel)->getTopItem();
         $topItems = (new ItemModel)->getTop5();
         $itemsNeedReplenishment = (new ItemModel)->replenishment();
@@ -68,6 +76,7 @@ class ManagerController extends Controller
                                     'topItem' => $topItem,
                                     'topItems' => $topItems,
                                     'itemsNeedReplenishment' => $itemsNeedReplenishment,
+                                    'OrderItems' => $OrderItems,
                                 ]);
     }
 
