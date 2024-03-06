@@ -50,27 +50,7 @@
         <div class="row row-card">
           <div class="card border-0" style="width: 100%;">
             <div class="row">
-              <div class="col-sm-4">
-                <div class="card-body d-flex justify-content-center">
-                  <div class="row">
-                      <div class="card monthly-sale-card" style="width: 100%;">
-                        <div class="card-body">
-                          <h4 class="card-title">Total Sale</h4>
-                          <h6 class="card-subtitle mb-2 text-muted">{{ $currentMonthYear }}</h6>
-                          <h1 style="color: #1d2365;"><b>P</b>{{ number_format($totalSale) }}</h1>
-                        </div>
-                      </div>
-                      <div class="card monthly-sale-card mt-3" style="width: 100%;">
-                        <div class="card-body">
-                          <h4 class="card-title">Total Profit</h4>
-                          <h6 class="card-subtitle mb-2 text-muted">{{ $currentMonthYear }}</h6>
-                          <h1 style="color: #1d2365;"><b>P</b>{{ number_format($totalProfit) }}</h1>
-                        </div>
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-8">
+              <div class="col-sm-12">
                 <div class="card-body">
                 @if($topItem)
                   <div class="row" style="background-color: #2b3499; border: 1px solid #c6c7c6; border-radius: 10px; padding: 1%;">
