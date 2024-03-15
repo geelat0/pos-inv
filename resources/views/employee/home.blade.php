@@ -60,8 +60,9 @@
 
 
 </head>
-<body>
+<body  style="overflow:hidden;">
 
+    <div>
 
 @include('includes.navbar-pos')
 
@@ -100,6 +101,7 @@
                             <h6>Employee Name:&nbsp;<b>{{ \Illuminate\Support\Facades\Auth::user()->first_name }}  </b> <b>{{\Illuminate\Support\Facades\Auth::user()->last_name }}    </b></h6>
                         </div>
                     </div>
+                    <div style="height:200px;overflow-y:scroll;">
                     <table class="table">
                         <thead>
                         <tr>
@@ -159,6 +161,7 @@
 {{--                        </tr>--}}
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -989,5 +992,7 @@
 <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </div>
+
 </body>
 </html>

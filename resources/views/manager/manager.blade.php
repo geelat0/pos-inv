@@ -50,7 +50,7 @@
         <div class="row row-card">
           <div class="card border-0" style="width: 100%;">
             <div class="row">
-              <div class="col-sm-4">
+              {{-- <div class="col-sm-4">
                 <div class="card-body d-flex justify-content-center">
                   <div class="row">
                       <div class="card monthly-sale-card" style="width: 100%;">
@@ -69,8 +69,8 @@
                       </div>
                   </div>
                 </div>
-              </div>
-              <div class="col-sm-8">
+              </div> --}}
+              <div class="col-sm-12">
                 <div class="card-body">
                 @if($topItem)
                   <div class="row" style="background-color: #2b3499; border: 1px solid #c6c7c6; border-radius: 10px; padding: 1%;">
